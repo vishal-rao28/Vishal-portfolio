@@ -22,7 +22,7 @@
   }
   updateCursor();
 
-  document.querySelectorAll('a, button, .proj-row, .skill-card, .stat-card, .contact-card').forEach(el => {
+  document.querySelectorAll('a, button, .proj-row, .skill-card, .stat-card, .contact-card, .close-btn').forEach(el => {
     el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
   });
