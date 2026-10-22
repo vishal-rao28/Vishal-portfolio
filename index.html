@@ -487,7 +487,13 @@
       <li><a href="Vishal_Rao_UDI.pdf" target="_blank" rel="noopener">Resume</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <a href="tel:+916382190388" class="nav-phone">+91 63821 90388</a>
+    <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
+      <button id="sfx-toggle" class="nav-sfx-btn" title="Toggle Interactive Audio" aria-label="Toggle Sound Effects">
+        <span class="sfx-icon">🔈</span>
+        <span class="sfx-label">SFX</span>
+      </button>
+      <a href="tel:+916382190388" class="nav-phone">+91 63821 90388</a>
+    </div>
   </nav>
 
   <!-- ════════════════ HERO ════════════════ -->
@@ -691,10 +697,17 @@
     <div class="section-inner">
       <div class="section-label reveal">03 — Work</div>
       <h2 class="section-heading reveal">FEATURED<br><em>PROJECTS</em></h2>
+      <div class="project-filter-tabs reveal">
+        <button class="filter-tab active" data-filter="all">All Projects <span class="tab-badge">6</span></button>
+        <button class="filter-tab" data-filter="ai">Medical AI &amp; Vision <span class="tab-badge">1</span></button>
+        <button class="filter-tab" data-filter="health">Health &amp; Vitals <span class="tab-badge">2</span></button>
+        <button class="filter-tab" data-filter="enterprise">Enterprise &amp; Systems <span class="tab-badge">2</span></button>
+        <button class="filter-tab" data-filter="lifestyle">Lifestyle <span class="tab-badge">1</span></button>
+      </div>
       <div class="projects-list">
 
         <!-- 01 VIANA 360 -->
-        <div class="proj-row reveal">
+        <div class="proj-row reveal" data-category="enterprise" data-project-id="viana360">
           <div class="proj-num">01</div>
           <div class="proj-body">
             <div class="proj-meta">iOS · Institutional · SwiftUI · Live</div>
@@ -712,12 +725,13 @@
               <span class="live-dot"></span>
               <span>Download on App Store →</span>
             </a>
+            <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
           </div>
           <div class="proj-arrow">→</div>
         </div>
 
         <!-- 02 SMART ULCER PREDICTOR -->
-        <div class="proj-row reveal">
+        <div class="proj-row reveal" data-category="ai" data-project-id="ulcer">
           <div class="proj-num">02</div>
           <div class="proj-body">
             <div class="proj-meta">iOS · Medical AI · Core ML · Live</div>
@@ -737,12 +751,13 @@
               <span class="live-dot"></span>
               <span>Download on App Store →</span>
             </a>
+            <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
           </div>
           <div class="proj-arrow">→</div>
         </div>
 
         <!-- 03 BREATHTRACK -->
-        <div class="proj-row reveal">
+        <div class="proj-row reveal" data-category="health" data-project-id="breathtrack">
           <div class="proj-num">03</div>
           <div class="proj-body">
             <div class="proj-meta">iOS · MedTech · Vitals & Telehealth · Live</div>
@@ -762,12 +777,13 @@
               <span class="live-dot"></span>
               <span>Download on App Store →</span>
             </a>
+            <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
           </div>
           <div class="proj-arrow">→</div>
         </div>
 
         <!-- 04 CORECARE -->
-        <div class="proj-row reveal">
+        <div class="proj-row reveal" data-category="health" data-project-id="corecare">
           <div class="proj-num">04</div>
           <div class="proj-body">
             <div class="proj-meta">iOS · Digital Health · Wellness & Analytics · Live</div>
@@ -787,12 +803,13 @@
               <span class="live-dot"></span>
               <span>Download on App Store →</span>
             </a>
+            <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
           </div>
           <div class="proj-arrow">→</div>
         </div>
 
         <!-- 05 HAIRJOURNEYTRACKER -->
-        <div class="proj-row reveal">
+        <div class="proj-row reveal" data-category="lifestyle" data-project-id="hairjourney">
           <div class="proj-num">05</div>
           <div class="proj-body">
             <div class="proj-meta">iOS · Health & Lifestyle · PhotosUI · Live</div>
@@ -811,12 +828,13 @@
               <span class="live-dot"></span>
               <span>Download on App Store →</span>
             </a>
+            <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
           </div>
           <div class="proj-arrow">→</div>
         </div>
 
         <!-- 06 SCHOOL BUS TRACKING -->
-        <div class="proj-row reveal">
+        <div class="proj-row reveal" data-category="enterprise" data-project-id="schoolbus">
           <div class="proj-num">06</div>
           <div class="proj-body">
             <div class="proj-meta">iOS · Safety · Core Location · MapKit</div>
@@ -997,38 +1015,92 @@
     </div>
   </footer>
 
-  <!-- ════════════════ PROJECT FLOW OVERLAY ════════════════ -->
-  <div id="project-flow-overlay" class="hidden">
-    <button id="close-flow-btn" class="close-btn">
-      <span class="close-icon">×</span>
-      <span class="close-text">BACK TO PORTFOLIO</span>
-    </button>
-
-    <div id="flow-edge-glow"></div>
-
-    <div class="flow-path-container">
-      <svg id="bike-path-svg" viewBox="0 0 1000 3500" preserveAspectRatio="xMidYMin slice">
-        <path id="bike-path"
-          d="M500,0 C500,500 100,500 100,1000 C100,1500 900,1500 900,2000 C900,2500 100,2500 100,3000 C100,3500 500,3500 500,3800" />
-      </svg>
-
-      <div id="flow-content">
-        <!-- Content will be injected here -->
+  <!-- ════════════════ PROJECT ARCHITECTURE DETAIL MODAL ════════════════ -->
+  <div id="project-modal" class="proj-modal-overlay">
+    <div class="proj-modal-window">
+      <div class="modal-header">
+        <span class="modal-category" id="modalCategory">iOS · Medical AI</span>
+        <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">✕</button>
+      </div>
+      <div class="modal-body">
+        <div class="modal-title-row">
+          <h3 class="modal-title" id="modalTitle">Project Title</h3>
+          <span class="modal-status-badge" id="modalStatusBadge">● Live on App Store</span>
+        </div>
+        <p class="modal-desc" id="modalDesc">Detailed description...</p>
+        <div class="modal-specs-grid">
+          <div class="spec-box">
+            <div class="spec-box-title">System Architecture</div>
+            <div class="spec-box-content" id="modalArch">MVVM + Reactive Data Binding</div>
+          </div>
+          <div class="spec-box">
+            <div class="spec-box-title">Testing &amp; QA Disciplines</div>
+            <div class="spec-box-content" id="modalQA">Automated UI &amp; Performance Benchmarks</div>
+          </div>
+        </div>
+        <div>
+          <div class="modal-stack-title">Core Technologies &amp; Frameworks</div>
+          <div class="modal-stack-tags" id="modalStackTags"></div>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <a href="#" target="_blank" rel="noopener" class="btn-primary" id="modalActionBtn">
+          <span>Download on App Store ↗</span>
+        </a>
       </div>
     </div>
-    <!-- Content will be injected via JS -->
-  </div>
   </div>
 
-  <div class="flow-scroll-indicator">
-    <span>SCROLL TO RIDE</span>
-    <div class="indicator-line"></div>
+  <!-- ════════════════ FLOATING CONTROLS & DEV TERMINAL ════════════════ -->
+  <div class="floating-controls">
+    <button id="terminal-trigger-btn" class="ctrl-btn terminal-btn" title="Open Interactive Developer Console">
+      <span class="btn-icon">&gt;_</span>
+      <span class="btn-label">Terminal</span>
+    </button>
+    <button id="scroll-top-btn" class="ctrl-btn scroll-top-btn" title="Scroll to Top">
+      <svg class="progress-ring" width="44" height="44" viewBox="0 0 44 44">
+        <circle class="progress-ring-circle-bg" cx="22" cy="22" r="18" fill="none" stroke-width="2.5"></circle>
+        <circle class="progress-ring-circle" cx="22" cy="22" r="18" fill="none" stroke-width="2.5"></circle>
+      </svg>
+      <span class="scroll-arrow">↑</span>
+    </button>
   </div>
+
+  <!-- ════════════════ TERMINAL DRAWER ════════════════ -->
+  <div id="dev-terminal-drawer" class="terminal-drawer hidden">
+    <div class="terminal-header">
+      <div class="terminal-dots">
+        <span class="tdot red"></span>
+        <span class="tdot yellow"></span>
+        <span class="tdot green"></span>
+      </div>
+      <div class="terminal-title">vishal@apple-silicon:~ (zsh)</div>
+      <button class="terminal-close-btn" id="terminal-close-btn" aria-label="Close terminal">✕</button>
+    </div>
+    <div class="terminal-body" id="terminal-output">
+      <div class="t-line dim">Vishal Rao M — Interactive Developer &amp; QA Console [v2.4]</div>
+      <div class="t-line dim">Type <span class="t-cyan">'help'</span> for commands or click quick suggestions below:</div>
+      <div class="t-suggestions">
+        <button class="t-sug-btn" data-cmd="about">about</button>
+        <button class="t-sug-btn" data-cmd="skills">skills</button>
+        <button class="t-sug-btn" data-cmd="projects">projects</button>
+        <button class="t-sug-btn" data-cmd="contact">contact</button>
+        <button class="t-sug-btn" data-cmd="resume">resume</button>
+        <button class="t-sug-btn" data-cmd="matrix">matrix</button>
+        <button class="t-sug-btn" data-cmd="clear">clear</button>
+      </div>
+    </div>
+    <div class="terminal-input-row">
+      <span class="t-prompt">vishal@dev:~$</span>
+      <input type="text" id="terminal-input" class="terminal-input" placeholder="Type a command..." autocomplete="off" spellcheck="false">
+    </div>
   </div>
+
+  <!-- ════════════════ TOAST NOTIFICATION ════════════════ -->
+  <div id="toast" class="toast-notification"></div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/three-scene.js"></script>
-  <script src="js/bike-flow.js"></script>
   <script src="js/main.js"></script>
 </body>
 

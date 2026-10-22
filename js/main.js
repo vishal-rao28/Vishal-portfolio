@@ -174,4 +174,525 @@
     link.href = canvas.toDataURL('image/png');
   };
 
+
+  // ─── CYBER AUDIO SOUND ENGINE (Web Audio API) ───
+  let audioCtx = null;
+  let sfxEnabled = false;
+
+  function initAudio() {
+    if (!audioCtx) {
+      const AudioContext = window.AudioContext || window.webkitAudioContext;
+      if (AudioContext) audioCtx = new AudioContext();
+    }
+    if (audioCtx && audioCtx.state === 'suspended') {
+      audioCtx.resume();
+    }
+  }
+
+  function playSound(type) {
+    if (!sfxEnabled) return;
+    initAudio();
+    if (!audioCtx) return;
+    try {
+      const now = audioCtx.currentTime;
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+
+      if (type === 'click') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(820, now);
+        osc.frequency.exponentialRampToValueAtTime(320, now + 0.06);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.06);
+        osc.start(now);
+        osc.stop(now + 0.06);
+      } else if (type === 'hover') {
+        osc.type = 'triangle';
+        osc.frequency.setValueAtTime(540, now);
+        gain.gain.setValueAtTime(0.015, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.03);
+        osc.start(now);
+        osc.stop(now + 0.03);
+      } else if (type === 'success') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(523.25, now);
+        osc.frequency.setValueAtTime(659.25, now + 0.07);
+        osc.frequency.setValueAtTime(783.99, now + 0.14);
+        gain.gain.setValueAtTime(0.07, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.28);
+        osc.start(now);
+        osc.stop(now + 0.28);
+      } else if (type === 'open') {
+        osc.type = 'sine';
+        osc.frequency.setValueAtTime(280, now);
+        osc.frequency.exponentialRampToValueAtTime(720, now + 0.12);
+        gain.gain.setValueAtTime(0.08, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.13);
+        osc.start(now);
+        osc.stop(now + 0.13);
+      } else if (type === 'terminal') {
+        osc.type = 'square';
+        osc.frequency.setValueAtTime(580, now);
+        gain.gain.setValueAtTime(0.02, now);
+        gain.gain.exponentialRampToValueAtTime(0.001, now + 0.025);
+        osc.start(now);
+        osc.stop(now + 0.025);
+      }
+    } catch (err) {}
+  }
+
+  const sfxToggle = document.getElementById('sfx-toggle');
+  if (sfxToggle) {
+    sfxToggle.addEventListener('click', () => {
+      initAudio();
+      sfxEnabled = !sfxEnabled;
+      sfxToggle.classList.toggle('sfx-active', sfxEnabled);
+      const icon = sfxToggle.querySelector('.sfx-icon');
+      const label = sfxToggle.querySelector('.sfx-label');
+      if (icon) icon.textContent = sfxEnabled ? '🔊' : '🔈';
+      if (label) label.textContent = sfxEnabled ? 'SFX: ON' : 'SFX';
+      if (sfxEnabled) playSound('success');
+      showToast(sfxEnabled ? '🔊 Interactive Cyber SFX Enabled' : '🔈 SFX Audio Muted');
+    });
+  }
+
+  // ─── TOAST NOTIFICATION ───
+  const toastEl = document.getElementById('toast');
+  let toastTimer = null;
+  function showToast(msg) {
+    if (!toastEl) return;
+    toastEl.textContent = msg;
+    toastEl.classList.add('show');
+    clearTimeout(toastTimer);
+    toastTimer = setTimeout(() => {
+      toastEl.classList.remove('show');
+    }, 2800);
+  }
+
+  // Auto Copy for Contact Links (phone & email)
+  document.querySelectorAll('a[href^="mailto:"], a[href^="tel:"], .hero-contact-item, .contact-card').forEach(el => {
+    el.addEventListener('click', (e) => {
+      const href = el.getAttribute('href');
+      let text = '';
+      if (href && (href.startsWith('mailto:') || href.startsWith('tel:'))) {
+        text = href.replace(/^(mailto:|tel:)/, '');
+      } else {
+        const valEl = el.querySelector('.cc-val') || el.querySelector('span:last-child');
+        text = valEl ? valEl.textContent.trim() : el.textContent.trim();
+      }
+      if (text && !text.includes('github') && !text.includes('linkedin') && navigator.clipboard) {
+        navigator.clipboard.writeText(text).then(() => {
+          playSound('success');
+          showToast('✓ Copied "' + text + '" to clipboard!');
+        }).catch(() => {});
+      }
+    });
+  });
+
+  // ─── PROJECT FILTER TABS ───
+  const filterTabs = document.querySelectorAll('.filter-tab');
+  const projectRows = document.querySelectorAll('.proj-row');
+
+  filterTabs.forEach(tab => {
+    tab.addEventListener('mouseenter', () => playSound('hover'));
+    tab.addEventListener('click', () => {
+      playSound('click');
+      filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.filter;
+
+      projectRows.forEach(row => {
+        row.classList.remove('filter-anim-in', 'skill-highlighted');
+        const cat = row.dataset.category;
+        if (filter === 'all' || cat === filter) {
+          row.classList.remove('filtered-out');
+          row.classList.add('filter-anim-in');
+        } else {
+          row.classList.add('filtered-out');
+        }
+      });
+    });
+  });
+
+  // ─── SKILL TAGS CLICK TO FILTER PROJECTS ───
+  document.querySelectorAll('.skill-tags .tag').forEach(tag => {
+    tag.style.cursor = 'pointer';
+    tag.setAttribute('title', 'Click to find projects using ' + tag.textContent);
+    tag.addEventListener('mouseenter', () => playSound('hover'));
+    tag.addEventListener('click', (e) => {
+      e.stopPropagation();
+      playSound('click');
+      const skillName = tag.textContent.trim().toLowerCase();
+
+      const allTab = document.querySelector('.filter-tab[data-filter="all"]');
+      if (allTab) {
+        filterTabs.forEach(t => t.classList.remove('active'));
+        allTab.classList.add('active');
+      }
+
+      let matchCount = 0;
+      projectRows.forEach(row => {
+        row.classList.remove('filtered-out', 'skill-highlighted');
+        const stackText = row.querySelector('.proj-stack')?.textContent.toLowerCase() || '';
+        const bodyText = row.querySelector('.proj-body')?.textContent.toLowerCase() || '';
+        if (stackText.includes(skillName) || bodyText.includes(skillName)) {
+          row.classList.add('skill-highlighted');
+          matchCount++;
+        }
+      });
+
+      const projectsSec = document.getElementById('projects');
+      if (projectsSec) projectsSec.scrollIntoView({ behavior: 'smooth' });
+      showToast('Found ' + matchCount + ' project(s) matching "' + tag.textContent + '"');
+    });
+  });
+
+  // ─── PROJECT ARCHITECTURE DETAIL MODAL ───
+  const projectDetails = {
+    viana360: {
+      category: 'iOS & iPadOS · Institutional · Live',
+      title: 'Viana 360 — Monitoring & Visualization',
+      status: '● Live on App Store',
+      desc: 'A comprehensive institutional application designed for real-time monitoring and advanced data visualization across iPhone and iPad platforms. Features high-throughput telemetry streams, role-based dashboards, and interactive analytics charts.',
+      arch: 'Clean MVVM Architecture · Combine Reactive State Management · Adaptive iPadOS SplitView · Real-time REST Data Ingestion',
+      qa: 'Selenium & Appium automated UI flows · High-load endpoint latency benchmarking · Network fault tolerance validation',
+      stack: ['SwiftUI', 'UIKit', 'Combine', 'Swift Charts', 'REST APIs', 'iPadOS', 'TestFlight'],
+      url: 'https://apps.apple.com/in/app/viana-360/id6760163659',
+      btnText: 'View on App Store ↗'
+    },
+    ulcer: {
+      category: 'iOS · Medical AI · Core ML · Live',
+      title: 'Smart Ulcer Predictor — AI Clinical Vision',
+      status: '● Live on App Store',
+      desc: 'An AI-powered clinical decision-support mobile application employing deep learning computer vision on-device. Evaluates skin ulcer image patterns to predict healing classification (Healing, Not Healing, Normal Skin) with sub-second inference and zero cloud latency.',
+      arch: 'On-device Apple Neural Engine (ANE) Inference · Core ML Model Quantization · Vision Framework Pre-processing · HIPAA-conscious Local Pipeline',
+      qa: 'Confusion matrix & model accuracy benchmarking · Memory leak validation during image capture · Extreme lighting tolerance tests',
+      stack: ['Core ML', 'Vision Framework', 'SwiftUI', 'Deep Learning', 'Convolutional Nets', 'Camera Capture'],
+      url: 'https://apps.apple.com/in/app/smart-ulcer-predictor/id6755873140',
+      btnText: 'View on App Store ↗'
+    },
+    breathtrack: {
+      category: 'iOS · MedTech · Vitals & Telehealth · Live',
+      title: 'BreathTrack — COPD Care & Remote Monitoring',
+      status: '● Live on App Store',
+      desc: 'A collaborative respiratory telehealth platform bridging pulmonary patients with clinical teams. Features real-time tracking for peripheral capillary oxygen saturation (SpO2), forced vital capacity (FVC), inhaler dose reminders, and clinician ABG diagnostic reviews.',
+      arch: 'Apple HealthKit Background Delivery · Secure REST Telehealth Integration · Interactive Vital Trend Graphing · Push Notification Dispatcher',
+      qa: 'Background HealthKit query battery impact testing · Clinician dashboard Selenium verification · Security penetration audits',
+      stack: ['SwiftUI', 'HealthKit', 'Combine', 'REST APIs', 'Interactive Charts', 'Local Notifications'],
+      url: 'https://apps.apple.com/in/app/breathtrack/id6804558579',
+      btnText: 'View on App Store ↗'
+    },
+    corecare: {
+      category: 'iOS · Digital Health · Wellness · Live',
+      title: 'CoreCare — All-in-One Wellness Companion',
+      status: '● Live on App Store',
+      desc: 'A holistic wellness management platform engineered to streamline daily health routines. Consolidates nutrition logging, hydration pacing, daily habit loops, mood tracking, and vital biometric indicators into an intuitive Apple HIG interface.',
+      arch: 'Offline-First Core Data Persistence · Combine Reactive Binding · Modular Micro-Feature Architecture · Dark Mode HIG Design',
+      qa: 'Core Data schema migration testing · Automated regression test suites · Memory footprint profiling under continuous session loops',
+      stack: ['SwiftUI', 'Combine', 'Core Data', 'Health Analytics', 'Apple HIG', 'Swift 5'],
+      url: 'https://apps.apple.com/in/app/corecare/id6753789920',
+      btnText: 'View on App Store ↗'
+    },
+    hairjourney: {
+      category: 'iOS · Health & Lifestyle · PhotosUI · Live',
+      title: 'HairJourneyTracker — Visual Growth Companion',
+      status: '● Live on App Store',
+      desc: 'A visual regimen companion allowing users to record high-resolution photographic milestones, analyze hair growth trends over time, evaluate treatment efficacy, and receive scheduled regimen notifications.',
+      arch: 'PhotosUI Modern Photo Picker · Asynchronous Image Compression Pipeline · Local Core Data Photo Cache · UserNotifications Framework',
+      qa: 'High-res image memory spike profiling · Scheduled notifications background delivery testing · UI rendering smoothness tests',
+      stack: ['SwiftUI', 'PhotosUI', 'Core Data', 'UserNotifications', 'Combine', 'Image Processing'],
+      url: 'https://apps.apple.com/in/app/hairjourneytracker/id6760697820',
+      btnText: 'View on App Store ↗'
+    },
+    schoolbus: {
+      category: 'iOS · Safety & Location · Core Location',
+      title: 'School Bus Child Tracking System',
+      status: '● Production Tested',
+      desc: 'A dual-application safety ecosystem composed of dedicated Parent and Bus Driver applications. Features live bus location streaming on Apple Maps, automated geofence boundary alerts, and electronic student boarding attendance.',
+      arch: 'MapKit & Core Location Sub-meter Accuracy · Firebase Realtime DB Location Telemetry · Geofence Region Monitoring · Dual App Architecture',
+      qa: 'Simulated moving GPS route stress tests · Reconnection resilience on cell signal loss · High-frequency location battery optimization',
+      stack: ['Swift', 'MapKit', 'Core Location', 'Firebase', 'Geofencing', 'Push Notifications'],
+      url: '#contact',
+      btnText: 'Inquire Architecture Details ↗'
+    }
+  };
+
+  const projectModal = document.getElementById('project-modal');
+  const modalCloseBtn = document.getElementById('modalCloseBtn');
+
+  function openProjectModal(id) {
+    const data = projectDetails[id];
+    if (!data || !projectModal) return;
+
+    const catEl = document.getElementById('modalCategory');
+    const titleEl = document.getElementById('modalTitle');
+    const statusEl = document.getElementById('modalStatusBadge');
+    const descEl = document.getElementById('modalDesc');
+    const archEl = document.getElementById('modalArch');
+    const qaEl = document.getElementById('modalQA');
+
+    if (catEl) catEl.textContent = data.category;
+    if (titleEl) titleEl.textContent = data.title;
+    if (statusEl) statusEl.textContent = data.status;
+    if (descEl) descEl.textContent = data.desc;
+    if (archEl) archEl.textContent = data.arch;
+    if (qaEl) qaEl.textContent = data.qa;
+
+    const stackContainer = document.getElementById('modalStackTags');
+    if (stackContainer) {
+      stackContainer.innerHTML = '';
+      data.stack.forEach(tech => {
+        const tag = document.createElement('span');
+        tag.className = 'proj-tag';
+        tag.textContent = tech;
+        stackContainer.appendChild(tag);
+      });
+    }
+
+    const actionBtn = document.getElementById('modalActionBtn');
+    if (actionBtn) {
+      actionBtn.href = data.url;
+      const span = actionBtn.querySelector('span');
+      if (span) span.textContent = data.btnText;
+    }
+
+    projectModal.classList.add('active');
+    playSound('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeProjectModal() {
+    if (!projectModal) return;
+    projectModal.classList.remove('active');
+    playSound('click');
+    document.body.style.overflow = '';
+  }
+
+  if (modalCloseBtn) modalCloseBtn.addEventListener('click', closeProjectModal);
+  if (projectModal) {
+    projectModal.addEventListener('click', (e) => {
+      if (e.target === projectModal) closeProjectModal();
+    });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    if (e.key === 'Escape') {
+      closeProjectModal();
+      closeTerminal();
+    }
+  });
+
+  projectRows.forEach(row => {
+    row.addEventListener('click', (e) => {
+      if (e.target.closest('.proj-live-link')) return;
+      const pid = row.dataset.projectId;
+      if (pid) openProjectModal(pid);
+    });
+  });
+
+  // ─── INTERACTIVE DEVELOPER CONSOLE ───
+  const terminalDrawer = document.getElementById('dev-terminal-drawer');
+  const terminalTriggerBtn = document.getElementById('terminal-trigger-btn');
+  const terminalCloseBtn = document.getElementById('terminal-close-btn');
+  const terminalInput = document.getElementById('terminal-input');
+  const terminalOutput = document.getElementById('terminal-output');
+
+  let commandHistory = [];
+  let historyIndex = -1;
+
+  function toggleTerminal() {
+    if (!terminalDrawer) return;
+    const isHidden = terminalDrawer.classList.contains('hidden');
+    if (isHidden) {
+      terminalDrawer.classList.remove('hidden');
+      terminalInput?.focus();
+      playSound('open');
+    } else {
+      closeTerminal();
+    }
+  }
+
+  function closeTerminal() {
+    if (terminalDrawer) {
+      terminalDrawer.classList.add('hidden');
+      playSound('click');
+    }
+  }
+
+  if (terminalTriggerBtn) terminalTriggerBtn.addEventListener('click', toggleTerminal);
+  if (terminalCloseBtn) terminalCloseBtn.addEventListener('click', closeTerminal);
+
+  function printLine(text, className = '') {
+    if (!terminalOutput) return;
+    const div = document.createElement('div');
+    div.className = 't-line ' + className;
+    div.innerHTML = text;
+    terminalOutput.appendChild(div);
+    terminalOutput.scrollTop = terminalOutput.scrollHeight;
+  }
+
+  function handleCommand(cmdRaw) {
+    const cmd = cmdRaw.trim().toLowerCase();
+    printLine('vishal@dev:~$ ' + cmdRaw, 'command-echo');
+    playSound('terminal');
+
+    if (!cmd) return;
+    commandHistory.push(cmdRaw);
+    historyIndex = commandHistory.length;
+
+    switch (cmd) {
+      case 'help':
+        printLine('Available Commands:', 'cyan');
+        printLine('  <span class="t-cyan">about</span>       - Bio, background & disciplines');
+        printLine('  <span class="t-cyan">skills</span>      - Categorized technical stack');
+        printLine('  <span class="t-cyan">projects</span>    - List all 6 projects with live links');
+        printLine('  <span class="t-cyan">experience</span>  - SIMATS, Viana Soft, Greatify history');
+        printLine('  <span class="t-cyan">contact</span>     - Email, phone, location & profiles');
+        printLine('  <span class="t-cyan">resume</span>      - Open official PDF resume');
+        printLine('  <span class="t-cyan">matrix</span>      - Trigger digital rain Easter egg');
+        printLine('  <span class="t-cyan">sudo hire</span>   - Fast track hiring dispatch');
+        printLine('  <span class="t-cyan">clear</span>       - Clear console screen');
+        break;
+
+      case 'about':
+        printLine('<strong>Vishal Rao M</strong> — iOS Developer & Technical Engineer', 'green');
+        printLine('• Specialized in SwiftUI, UIKit, Combine, Core ML, and Apple HIG.');
+        printLine('• Expert in multi-platform testing across 4 disciplines: Selenium, Appium, Load Testing, and Vulnerability Testing.');
+        printLine('• Education: B.Tech in Artificial Intelligence & Data Science.');
+        break;
+
+      case 'skills':
+        printLine('⚡ Core Technical Arsenal:', 'cyan');
+        printLine('• <strong>Mobile:</strong> Swift, SwiftUI, UIKit, Combine, Core ML, HealthKit, PhotosUI, MapKit');
+        printLine('• <strong>QA & Automation:</strong> Selenium, Appium, Postman, Load Testing, Vulnerability Testing');
+        printLine('• <strong>Backend & DB:</strong> Core Data, MySQL, PHP, ROOM Database, REST APIs');
+        printLine('• <strong>Design & Tools:</strong> Figma, Canva, Blender, Xcode, Git');
+        break;
+
+      case 'projects':
+        printLine('🚀 Featured Production Projects:', 'cyan');
+        printLine('1. <strong>Viana 360</strong> (Live on App Store) — Monitoring & Data Visualization');
+        printLine('2. <strong>Smart Ulcer Predictor</strong> (Live on App Store) — Medical AI & Clinical Vision');
+        printLine('3. <strong>BreathTrack</strong> (Live on App Store) — COPD Telehealth & HealthKit Vitals');
+        printLine('4. <strong>CoreCare</strong> (Live on App Store) — Lifestyle, Nutrition & Core Data Companion');
+        printLine('5. <strong>HairJourneyTracker</strong> (Live on App Store) — Visual Growth & PhotosUI Regimen');
+        printLine('6. <strong>School Bus Child Tracking</strong> — Dual-App MapKit & Geofencing Ecosystem');
+        printLine('💡 Type project name or click cards on the main page to inspect architecture.', 'dim');
+        break;
+
+      case 'experience':
+        printLine('💼 Career Milestones:', 'yellow');
+        printLine('• <strong>2026 – Present:</strong> iOS Dev & Technical Trainer @ SIMATS Engineering');
+        printLine('• <strong>2025:</strong> Technical Engineer (QA & Backend) @ Viana Soft');
+        printLine('• <strong>2024:</strong> Technical Engineer @ Greatify');
+        break;
+
+      case 'contact':
+        printLine('📬 Direct Coordinates:', 'cyan');
+        printLine('• Phone: <a href="tel:+916382190388" class="t-cyan">+91 63821 90388</a>');
+        printLine('• Email: <a href="mailto:vishalrao5432@gmail.com" class="t-cyan">vishalrao5432@gmail.com</a>');
+        printLine('• GitHub: <a href="https://github.com/vishal-rao28" target="_blank" class="t-cyan">github.com/vishal-rao28</a>');
+        printLine('• LinkedIn: <a href="https://linkedin.com/in/vishal-rao-173a232b9" target="_blank" class="t-cyan">vishal-rao</a>');
+        printLine('• Location: Chennai, Tamil Nadu, India');
+        break;
+
+      case 'resume':
+        printLine('Opening official PDF resume in new tab...', 'green');
+        window.open('Vishal_Rao_UDI.pdf', '_blank');
+        break;
+
+      case 'clear':
+        if (terminalOutput) terminalOutput.innerHTML = '';
+        break;
+
+      case 'matrix':
+        printLine('Initializing Matrix digital stream...', 'green');
+        for (let i = 0; i < 5; i++) {
+          setTimeout(() => {
+            const glyphs = '01010110 01001001 01010011 01001000 01000001 01001100';
+            printLine(glyphs.split('').sort(() => 0.5 - Math.random()).join(''), 'green');
+          }, i * 120);
+        }
+        break;
+
+      case 'sudo hire':
+      case 'hire':
+        printLine('⭐ INITIATING CANDIDATE ENGAGEMENT PROTOCOL...', 'yellow');
+        printLine('Redirecting to mail client for priority dispatch...', 'green');
+        setTimeout(() => {
+          window.location.href = 'mailto:vishalrao5432@gmail.com?subject=Opportunity%20Discussion%20with%20Vishal%20Rao';
+        }, 800);
+        break;
+
+      default:
+        printLine("Command not recognized: '" + cmdRaw + "'. Type <span class=\"t-cyan\">'help'</span> for list of commands.", 'dim');
+        break;
+    }
+  }
+
+  if (terminalInput) {
+    terminalInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        const val = terminalInput.value;
+        terminalInput.value = '';
+        handleCommand(val);
+      } else if (e.key === 'ArrowUp') {
+        if (historyIndex > 0) {
+          historyIndex--;
+          terminalInput.value = commandHistory[historyIndex] || '';
+        }
+      } else if (e.key === 'ArrowDown') {
+        if (historyIndex < commandHistory.length - 1) {
+          historyIndex++;
+          terminalInput.value = commandHistory[historyIndex] || '';
+        } else {
+          historyIndex = commandHistory.length;
+          terminalInput.value = '';
+        }
+      }
+    });
+  }
+
+  document.querySelectorAll('.t-sug-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const cmd = btn.dataset.cmd;
+      if (cmd) handleCommand(cmd);
+    });
+  });
+
+  // ─── CIRCULAR SCROLL PROGRESS & BACK TO TOP ───
+  const scrollTopBtn = document.getElementById('scroll-top-btn');
+  const progressCircle = document.querySelector('.progress-ring-circle');
+  const circleCircumference = 2 * Math.PI * 18;
+
+  if (progressCircle) {
+    progressCircle.style.strokeDasharray = circleCircumference + ' ' + circleCircumference;
+    progressCircle.style.strokeDashoffset = circleCircumference;
+  }
+
+  window.addEventListener('scroll', () => {
+    const scrollY = window.scrollY;
+    const docHeight = document.documentElement.scrollHeight - window.innerHeight;
+    const progress = Math.min(Math.max(scrollY / (docHeight || 1), 0), 1);
+
+    if (progressCircle) {
+      const offset = circleCircumference - (progress * circleCircumference);
+      progressCircle.style.strokeDashoffset = offset;
+    }
+
+    if (scrollTopBtn) {
+      if (scrollY > 300) scrollTopBtn.classList.add('visible');
+      else scrollTopBtn.classList.remove('visible');
+    }
+  }, { passive: true });
+
+  if (scrollTopBtn) {
+    scrollTopBtn.addEventListener('click', () => {
+      playSound('click');
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    });
+  }
+
 })();
