@@ -91,15 +91,19 @@
   }, { threshold: 0.6 });
   document.querySelectorAll('.stat-card').forEach(c => counterIO.observe(c));
 
-  // ─── HERO NAME 3D TILT ───
-  const tiltEl = document.getElementById('hero-tilt');
+  // ─── HERO 3D TILT ───
+  const heroNameEl = document.querySelector('.hero-name');
+  const heroCardEl = document.querySelector('.hero-executive-card');
   document.addEventListener('mousemove', e => {
-    if (!tiltEl) return;
-    const xOff = (e.clientX / window.innerWidth  - 0.5) * 14;
+    const xOff = (e.clientX / window.innerWidth  - 0.5) * 12;
     const yOff = (e.clientY / window.innerHeight - 0.5) * 8;
-    tiltEl.querySelector('.hero-name').style.transform =
-      `perspective(800px) rotateY(${xOff}deg) rotateX(${-yOff}deg)`;
-  });
+    if (heroNameEl) {
+      heroNameEl.style.transform = `perspective(800px) rotateY(${xOff * 0.8}deg) rotateX(${-yOff * 0.8}deg)`;
+    }
+    if (heroCardEl) {
+      heroCardEl.style.transform = `perspective(800px) rotateY(${xOff}deg) rotateX(${-yOff}deg) translateY(-2px)`;
+    }
+  }, { passive: true });
 
   // ─── AUDIO SYNTHESIZER FEEDBACK ───
   let audioEnabled = false;

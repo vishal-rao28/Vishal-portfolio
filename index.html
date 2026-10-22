@@ -11,434 +11,6 @@
     rel="stylesheet">
   <link rel="icon" type="image/png" href="assets/vishal_optimized.jpg">
   <link rel="stylesheet" href="css/style.css">
-  <style>
-    /* ══════════════════════════════════════════
-   HERO NAME FIX — properly scaled
-/* ══════════════════════════════════════════ */
-    .hero-name {
-      font-family: 'Playfair Display', serif !important;
-      font-size: clamp(42px, 7vw, 96px) !important;
-      line-height: 1 !important;
-      letter-spacing: -0.01em !important;
-      color: #ffffff !important;
-      font-weight: 900 !important;
-      text-shadow: 0 10px 30px rgba(0, 0, 0, 0.5);
-    }
-
-    .hero-name .line-1 {
-      display: block;
-      font-size: clamp(38px, 6vw, 82px) !important;
-      opacity: 0;
-      animation: fadeUp 1s 0.5s forwards;
-    }
-
-    .hero-name .line-2 {
-      display: block;
-      font-size: clamp(48px, 8.5vw, 108px) !important;
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.5);
-      color: transparent !important;
-      opacity: 0;
-      animation: fadeUp 1s 0.7s forwards;
-    }
-
-    /* ══════════════════════════════════════════
-   HERO LAYOUT — two column: photo left, content right
-/* ══════════════════════════════════════════ */
-    #hero {
-      display: flex !important;
-      align-items: center !important;
-      justify-content: center !important;
-    }
-
-    .hero-two-col {
-      display: grid;
-      grid-template-columns: 280px 1fr;
-      gap: 64px;
-      align-items: center;
-      max-width: 1100px;
-      width: 100%;
-      padding: 0 60px;
-      position: relative;
-      z-index: 3;
-    }
-
-    /* Photo column */
-    .hero-photo-col {
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      gap: 16px;
-      opacity: 0;
-      animation: fadeUp 1s 0.4s forwards;
-    }
-
-    .hero-photo-frame {
-      position: relative;
-      width: 300px;
-      height: 450px;
-    }
-
-    .hero-photo-frame::before {
-      content: '';
-      position: absolute;
-      inset: -2px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.1));
-      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
-      z-index: -1;
-    }
-
-    .hero-photo-frame::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      right: -10px;
-      width: 100%;
-      height: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.07);
-      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
-      z-index: -2;
-    }
-
-    .hero-photo {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-      object-position: center center;
-      display: block;
-      filter: grayscale(10%) contrast(1.08);
-      clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
-      transition: filter .4s;
-    }
-
-    .hero-photo:hover {
-      filter: grayscale(0%) contrast(1.12) brightness(1.05);
-    }
-
-    /* Pulse dot */
-    .photo-pulse-dot {
-      position: absolute;
-      top: 16px;
-      right: -12px;
-      width: 8px;
-      height: 8px;
-      background: white;
-      border-radius: 50%;
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.8);
-      animation: pulseDot 2s ease-in-out infinite;
-    }
-
-    @keyframes pulseDot {
-
-      0%,
-      100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
-        transform: scale(1);
-      }
-
-      50% {
-        box-shadow: 0 0 28px rgba(255, 255, 255, 0.9);
-        transform: scale(1.2);
-      }
-    }
-
-    /* No photo fallback — hide entire col */
-    .hero-photo-col.hidden {
-      display: none;
-    }
-
-    .hero-photo-label {
-      font-family: 'Space Mono', monospace;
-      font-size: 8px;
-      letter-spacing: 0.22em;
-      color: rgba(255, 255, 255, 0.22);
-      text-transform: uppercase;
-      text-align: center;
-    }
-
-    /* Content column */
-    .hero-inner {
-      margin: 0 !important;
-      padding: 0 !important;
-      text-align: left !important;
-      max-width: 100% !important;
-    }
-
-    @media (max-width: 900px) {
-      .hero-two-col {
-        grid-template-columns: 1fr;
-        padding: 0 24px;
-        gap: 40px;
-        text-align: center;
-      }
-
-      .hero-photo-col {
-        display: none;
-      }
-
-      .hero-inner {
-        text-align: center !important;
-      }
-
-      .hero-ctas {
-        justify-content: center !important;
-      }
-
-      .hero-contact-strip {
-        margin: 20px auto 0 !important;
-      }
-    }
-
-    /* ══════════════════════════════════════════
-   HERO CONTACT STRIP
-/* ══════════════════════════════════════════ */
-    .hero-contact-strip {
-      display: flex;
-      flex-wrap: wrap;
-      justify-content: flex-start;
-      align-items: center;
-      gap: 8px 20px;
-      margin: 20px 0 0;
-      padding: 14px 24px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
-      max-width: fit-content;
-    }
-
-    .hero-contact-item {
-      display: flex;
-      align-items: center;
-      gap: 7px;
-      font-family: 'Space Mono', monospace;
-      font-size: 11px;
-      letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.55);
-      text-decoration: none;
-      white-space: nowrap;
-      transition: color .3s;
-    }
-
-    .hero-contact-item:hover {
-      color: rgba(255, 255, 255, 0.9);
-    }
-
-    .hero-contact-dot {
-      color: rgba(255, 255, 255, 0.2);
-      font-size: 16px;
-    }
-
-    @media (max-width: 600px) {
-      .hero-contact-dot {
-        display: none;
-      }
-
-      .hero-contact-strip {
-        flex-direction: column;
-        align-items: center;
-        gap: 10px;
-        padding: 16px 20px;
-      }
-    }
-
-    /* ══════════════════════════════════════════
-   HERO DESC + CTAS — centered
-/* ══════════════════════════════════════════ */
-    .hero-desc {
-      text-align: left !important;
-      max-width: 540px;
-      margin: 24px 0 0 !important;
-      font-size: 14px;
-      line-height: 1.8;
-      color: rgba(255, 255, 255, 0.42);
-    }
-
-    @media (max-width: 900px) {
-      .hero-desc {
-        text-align: center !important;
-        margin: 24px auto 0 !important;
-      }
-    }
-
-    .hero-ctas {
-      justify-content: flex-start !important;
-      margin-top: 40px !important;
-    }
-
-    .hero-eyebrow {
-      text-align: left !important;
-    }
-
-    @media (max-width: 900px) {
-      .hero-ctas {
-        justify-content: center !important;
-      }
-
-      .hero-eyebrow {
-        text-align: center !important;
-      }
-    }
-
-    /* ══════════════════════════════════════════
-   LIVE LINK BUTTON
-/* ══════════════════════════════════════════ */
-    .proj-live-link {
-      display: inline-flex;
-      align-items: center;
-      gap: 10px;
-      margin-top: 18px;
-      padding: 9px 22px;
-      border: 1px solid rgba(255, 255, 255, 0.14);
-      background: rgba(255, 255, 255, 0.03);
-      color: rgba(255, 255, 255, 0.65);
-      font-family: 'Space Mono', monospace;
-      font-size: 9px;
-      letter-spacing: 0.16em;
-      text-transform: uppercase;
-      text-decoration: none;
-      position: relative;
-      overflow: hidden;
-      transition: all .3s;
-    }
-
-    .proj-live-link::before {
-      content: '';
-      position: absolute;
-      inset: 0;
-      background: rgba(255, 255, 255, 0.04);
-      transform: translateX(-100%);
-      transition: transform .3s;
-    }
-
-    .proj-live-link:hover {
-      border-color: rgba(255, 255, 255, 0.38);
-      color: white;
-      transform: translateY(-2px);
-      box-shadow: 0 8px 30px rgba(255, 255, 255, 0.05);
-    }
-
-    .proj-live-link:hover::before {
-      transform: translateX(0);
-    }
-
-    .proj-live-link .live-dot {
-      width: 6px;
-      height: 6px;
-      border-radius: 50%;
-      background: #4ade80;
-      box-shadow: 0 0 8px #4ade80;
-      flex-shrink: 0;
-      animation: livePulse 1.6s ease-in-out infinite;
-    }
-
-    .proj-live-link span {
-      position: relative;
-      z-index: 1;
-    }
-
-    @keyframes livePulse {
-
-      0%,
-      100% {
-        opacity: 1;
-      }
-
-      50% {
-        opacity: 0.35;
-      }
-    }
-
-    /* ══════════════════════════════════════════
-   ABOUT GRID — 2 col (no photo col)
-/* ══════════════════════════════════════════ */
-    .about-grid-2 {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 60px;
-      margin-top: 60px;
-      align-items: start;
-    }
-
-    @media (max-width: 768px) {
-      .about-grid-2 {
-        grid-template-columns: 1fr;
-        gap: 40px;
-      }
-    }
-
-    /* ══════════════════════════════════════════
-   STAT CARDS — 2x2 grid
-/* ══════════════════════════════════════════ */
-    .about-stats {
-      display: grid;
-      grid-template-columns: 1fr 1fr;
-      gap: 2px;
-    }
-
-    /* ══════════════════════════════════════════
-   HERO RINGS — center them properly
-/* ══════════════════════════════════════════ */
-    .hero-ring {
-      left: 50% !important;
-      transform: translateX(-50%) !important;
-    }
-
-    /* ══════════════════════════════════════════
-   MOBILE GLOBAL FIXES
-/* ══════════════════════════════════════════ */
-    @media (max-width: 768px) {
-      .hero-badge {
-        display: none;
-      }
-
-      .proj-row {
-        grid-template-columns: 44px 1fr !important;
-        gap: 16px !important;
-        padding: 24px 20px !important;
-      }
-
-      .proj-arrow {
-        display: none !important;
-      }
-
-      .skills-grid {
-        grid-template-columns: 1fr !important;
-      }
-
-      .about-stats {
-        grid-template-columns: 1fr 1fr;
-      }
-
-      .contact-cards {
-        grid-template-columns: 1fr !important;
-        gap: 10px !important;
-      }
-
-      .section-inner {
-        padding-left: 24px !important;
-        padding-right: 24px !important;
-      }
-
-      nav {
-        padding: 16px 20px !important;
-      }
-
-      .nav-links {
-        display: none !important;
-      }
-    }
-
-    @keyframes fadeUp {
-      from {
-        opacity: 0;
-        transform: translateY(28px);
-      }
-
-      to {
-        opacity: 1;
-        transform: translateY(0);
-      }
-    }
-  </style>
 </head>
 
 <body>
@@ -472,103 +44,101 @@
 
   <!-- ════════════════ HERO ════════════════ -->
   <section id="hero">
-    <div class="hero-ring hero-ring-1"></div>
-    <div class="hero-ring hero-ring-2"></div>
-    <div class="hero-ring hero-ring-3"></div>
-    <div class="hero-ring hero-ring-4"></div>
+    <div class="hero-content-wrap">
 
-    <div class="hero-badge badge-1 reveal-badge">
-      <div class="badge-num">2+</div>
-      <div class="badge-label">Apps Built</div>
-    </div>
-    <div class="hero-badge badge-2 reveal-badge">
-      <div class="badge-num">iOS</div>
-      <div class="badge-label">Specialized</div>
-    </div>
-    <div class="hero-badge badge-3 reveal-badge">
-      <div class="badge-num">iOS &amp; QA</div>
-      <div class="badge-label">Engineer</div>
-    </div>
-    <div class="hero-badge badge-4 reveal-badge">
-      <div class="badge-num">B.Tech</div>
-      <div class="badge-label">AI &amp; DS</div>
-    </div>
+      <!-- Top Status Pill -->
+      <div class="hero-status-pill">
+        <span class="status-radar-dot"></span>
+        <span>Available for iOS &amp; Technical Engineering Roles · Chennai, IN</span>
+      </div>
 
-    <!-- TWO-COLUMN HERO -->
-    <div class="hero-two-col">
-
-      <!-- LEFT: PHOTO -->
-      <div class="hero-photo-col" id="heroPhotoCol">
-        <div class="hero-photo-frame">
-          <div class="photo-pulse-dot"></div>
-          <img src="assets/vishal_optimized1.jpg" alt="Vishal Rao M" class="hero-photo"
+      <!-- Executive Portrait & Spec Island Card -->
+      <div class="hero-executive-card">
+        <div class="hec-photo-wrap">
+          <img src="assets/vishal_optimized1.jpg" alt="Vishal Rao M" class="hec-photo"
             onerror="this.src='assets/vishal_optimized.jpg'">
+          <span class="hec-live-dot" title="Active &amp; Available"></span>
         </div>
-        <div class="hero-photo-label">Vishal Rao M · iOS Dev &amp; Tech Engineer</div>
-
-        <!-- Interactive Developer Inspector Panel -->
-        <div class="hero-inspector-card">
-          <div class="hic-header">
-            <span class="hic-dot red"></span>
-            <span class="hic-dot yellow"></span>
-            <span class="hic-dot green"></span>
-            <span class="hic-title">ENGINEERING SPEC</span>
-          </div>
-          <div class="hic-body">
-            <div class="hic-row"><span class="hic-k">Core Stack:</span> <span class="hic-v">SwiftUI · UIKit</span></div>
-            <div class="hic-row"><span class="hic-k">QA Automation:</span> <span class="hic-v">Selenium · Appium</span></div>
-            <div class="hic-row"><span class="hic-k">App Store:</span> <span class="hic-v live">5 Production Live</span></div>
-            <div class="hic-row"><span class="hic-k">Security Audit:</span> <span class="hic-v verified">Vulnerability Checked</span></div>
+        <div class="hec-details">
+          <div class="hec-name-tag">Vishal Rao M</div>
+          <div class="hec-role-tag">iOS Developer &amp; Technical Engineer</div>
+          <div class="hec-badges">
+            <span class="hec-chip">⚡ 5+ App Store Live</span>
+            <span class="hec-chip">🛡️ QA Automation</span>
+            <span class="hec-chip">🎓 B.Tech AI &amp; DS</span>
           </div>
         </div>
       </div>
 
-      <!-- RIGHT: CONTENT -->
-      <div class="hero-inner">
-        <div class="hero-status-pill">
-          <span class="status-radar-dot"></span>
-          <span>Available for iOS &amp; Technical Opportunities</span>
+      <!-- Modern Luxury Headline -->
+      <h1 class="hero-name">VISHAL RAO M</h1>
+
+      <!-- Role Tagline -->
+      <div class="hero-subtitle">
+        <span>Native iOS Architecture</span>
+        <span class="sep">✦</span>
+        <span>SwiftUI &amp; UIKit</span>
+        <span class="sep">✦</span>
+        <span>Automated QA Pipelines</span>
+      </div>
+
+      <!-- Contact Pill Strip -->
+      <div class="hero-contact-strip">
+        <a href="tel:+916382190388" class="hero-contact-item">
+          <span class="hci-icon">📱</span>
+          <span>+91 63821 90388</span>
+        </a>
+        <span class="hero-contact-dot">·</span>
+        <a href="mailto:vishalrao5432@gmail.com" class="hero-contact-item">
+          <span class="hci-icon">✉️</span>
+          <span>vishalrao5432@gmail.com</span>
+        </a>
+        <span class="hero-contact-dot">·</span>
+        <span class="hero-contact-item">
+          <span class="hci-icon">📍</span>
+          <span>Chennai, Tamil Nadu</span>
+        </span>
+      </div>
+
+      <!-- Hero Description -->
+      <p class="hero-desc">
+        Specializing in high-performance native iOS mobile architectures (Swift, SwiftUI, UIKit, Core ML) paired with
+        automated software QA across Selenium, Appium, Load, and Security testing. Proven track record launching production apps
+        to the App Store and engineering resilient software systems.
+      </p>
+
+      <!-- Hero CTAs -->
+      <div class="hero-ctas">
+        <a href="#projects" class="btn-primary"><span>Explore Projects ⚡</span></a>
+        <a href="Vishal_Rao_UDI.pdf" target="_blank" rel="noopener" class="btn-cyan"><span>View Resume (PDF) 📄</span></a>
+        <a href="#experience" class="btn-ghost"><span>Experience</span></a>
+        <a href="#contact" class="btn-ghost"><span>Get in Touch</span></a>
+      </div>
+
+      <!-- Glassmorphic Metrics Bar -->
+      <div class="hero-metrics-bar">
+        <div class="hm-item">
+          <div class="hm-val">5+</div>
+          <div class="hm-lbl">App Store Live</div>
         </div>
-        <div class="hero-eyebrow">iOS Developer &nbsp;·&nbsp; Technical Engineer &nbsp;·&nbsp; B.Tech AI &amp; DS</div>
-
-        <div class="hero-name-wrap" id="hero-tilt">
-          <h1 class="hero-name">
-            <span class="name-line line-1">VISHAL RAO</span>
-            <span class="name-line line-2">M</span>
-          </h1>
+        <div class="hm-div"></div>
+        <div class="hm-item">
+          <div class="hm-val">4</div>
+          <div class="hm-lbl">QA Disciplines</div>
         </div>
-
-        <div class="hero-contact-strip">
-          <a href="tel:+916382190388" class="hero-contact-item">
-            <span class="hci-icon">📱</span>
-            <span>+91 63821 90388</span>
-          </a>
-          <span class="hero-contact-dot">·</span>
-          <a href="mailto:vishalrao5432@gmail.com" class="hero-contact-item">
-            <span class="hci-icon">✉️</span>
-            <span>vishalrao5432@gmail.com</span>
-          </a>
-          <span class="hero-contact-dot">·</span>
-          <span class="hero-contact-item">
-            <span class="hci-icon">📍</span>
-            <span>Chennai, Tamil Nadu</span>
-          </span>
+        <div class="hm-div"></div>
+        <div class="hm-item">
+          <div class="hm-val">100%</div>
+          <div class="hm-lbl">Native Swift/iOS</div>
         </div>
-
-        <p class="hero-desc">
-          Passionate iOS Developer &amp; Technical Engineer specializing in SwiftUI, UIKit, high-performance mobile
-          architectures, and automated QA testing (Selenium, Appium, Load &amp; Security). Dedicated to shipping fast,
-          clean, and production-tested apps.
-        </p>
-
-        <div class="hero-ctas">
-          <a href="#projects" class="btn-primary"><span>View My Work</span></a>
-          <a href="Vishal_Rao_UDI.pdf" target="_blank" rel="noopener" class="btn-ghost">Resume ↗</a>
-          <a href="#experience" class="btn-ghost">Experience</a>
+        <div class="hm-div"></div>
+        <div class="hm-item">
+          <div class="hm-val">SIMATS</div>
+          <div class="hm-lbl">Tech Engineer</div>
         </div>
       </div>
 
-    </div><!-- end hero-two-col -->
+    </div><!-- end hero-content-wrap -->
 
     <div class="scroll-cue">
       <div class="scroll-line"></div>
