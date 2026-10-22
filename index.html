@@ -28,6 +28,10 @@
     .hero-name .line-1 {
       display: block;
       font-size: clamp(38px, 6vw, 82px) !important;
+      background: linear-gradient(135deg, #ffffff 40%, #e2e8f0 75%, #00f2fe 100%) !important;
+      -webkit-background-clip: text !important;
+      -webkit-text-fill-color: transparent !important;
+      text-shadow: 0 10px 40px rgba(0, 122, 255, 0.25);
       opacity: 0;
       animation: fadeUp 1s 0.5s forwards;
     }
@@ -35,8 +39,9 @@
     .hero-name .line-2 {
       display: block;
       font-size: clamp(48px, 8.5vw, 108px) !important;
-      -webkit-text-stroke: 1.5px rgba(255, 255, 255, 0.5);
+      -webkit-text-stroke: 1.5px rgba(0, 242, 254, 0.6) !important;
       color: transparent !important;
+      text-shadow: 0 0 24px rgba(0, 242, 254, 0.2);
       opacity: 0;
       animation: fadeUp 1s 0.7s forwards;
     }
@@ -76,13 +81,20 @@
       position: relative;
       width: 300px;
       height: 450px;
+      box-shadow: 0 25px 60px rgba(0, 0, 0, 0.65), 0 0 50px rgba(0, 122, 255, 0.22);
+      transition: transform 0.4s ease, box-shadow 0.4s ease;
+    }
+
+    .hero-photo-frame:hover {
+      transform: translateY(-4px);
+      box-shadow: 0 30px 75px rgba(0, 0, 0, 0.75), 0 0 65px rgba(0, 242, 254, 0.35);
     }
 
     .hero-photo-frame::before {
       content: '';
       position: absolute;
       inset: -2px;
-      background: linear-gradient(135deg, rgba(255, 255, 255, 0.2), rgba(255, 255, 255, 0.03), rgba(255, 255, 255, 0.1));
+      background: linear-gradient(135deg, rgba(0, 242, 254, 0.65), rgba(0, 122, 255, 0.35), rgba(139, 92, 246, 0.55));
       clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
       z-index: -1;
     }
@@ -94,7 +106,7 @@
       right: -10px;
       width: 100%;
       height: 100%;
-      border: 1px solid rgba(255, 255, 255, 0.07);
+      border: 1.5px solid rgba(0, 242, 254, 0.25);
       clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
       z-index: -2;
     }
@@ -105,13 +117,13 @@
       object-fit: cover;
       object-position: center center;
       display: block;
-      filter: grayscale(10%) contrast(1.08);
+      filter: contrast(1.08) brightness(1.02);
       clip-path: polygon(16px 0, 100% 0, 100% calc(100% - 16px), calc(100% - 16px) 100%, 0 100%, 0 16px);
-      transition: filter .4s;
+      transition: filter .4s ease;
     }
 
     .hero-photo:hover {
-      filter: grayscale(0%) contrast(1.12) brightness(1.05);
+      filter: contrast(1.12) brightness(1.06);
     }
 
     /* Pulse dot */
@@ -119,11 +131,11 @@
       position: absolute;
       top: 16px;
       right: -12px;
-      width: 8px;
-      height: 8px;
-      background: white;
+      width: 10px;
+      height: 10px;
+      background: #00f5d4;
       border-radius: 50%;
-      box-shadow: 0 0 18px rgba(255, 255, 255, 0.8);
+      box-shadow: 0 0 16px #00f5d4;
       animation: pulseDot 2s ease-in-out infinite;
     }
 
@@ -131,13 +143,13 @@
 
       0%,
       100% {
-        box-shadow: 0 0 10px rgba(255, 255, 255, 0.4);
+        box-shadow: 0 0 10px rgba(0, 245, 212, 0.4);
         transform: scale(1);
       }
 
       50% {
-        box-shadow: 0 0 28px rgba(255, 255, 255, 0.9);
-        transform: scale(1.2);
+        box-shadow: 0 0 28px rgba(0, 245, 212, 0.95);
+        transform: scale(1.25);
       }
     }
 
@@ -148,9 +160,10 @@
 
     .hero-photo-label {
       font-family: 'Space Mono', monospace;
-      font-size: 8px;
-      letter-spacing: 0.22em;
-      color: rgba(255, 255, 255, 0.22);
+      font-size: 8.5px;
+      letter-spacing: 0.24em;
+      color: var(--accent-cyan, #00f2fe);
+      text-shadow: 0 0 12px rgba(0, 242, 254, 0.3);
       text-transform: uppercase;
       text-align: center;
     }
@@ -198,11 +211,20 @@
       align-items: center;
       gap: 8px 20px;
       margin: 20px 0 0;
-      padding: 14px 24px;
-      background: rgba(255, 255, 255, 0.04);
-      border: 1px solid rgba(255, 255, 255, 0.08);
-      border-radius: 2px;
+      padding: 12px 26px;
+      background: rgba(14, 18, 28, 0.75);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 40px;
+      box-shadow: 0 10px 30px rgba(0, 0, 0, 0.35);
       max-width: fit-content;
+      transition: all .3s ease;
+    }
+
+    .hero-contact-strip:hover {
+      border-color: rgba(0, 242, 254, 0.35);
+      box-shadow: 0 14px 40px rgba(0, 0, 0, 0.45), 0 0 25px rgba(0, 122, 255, 0.15);
     }
 
     .hero-contact-item {
@@ -212,18 +234,19 @@
       font-family: 'Space Mono', monospace;
       font-size: 11px;
       letter-spacing: 0.08em;
-      color: rgba(255, 255, 255, 0.55);
+      color: rgba(255, 255, 255, 0.7);
       text-decoration: none;
       white-space: nowrap;
-      transition: color .3s;
+      transition: all .3s;
     }
 
     .hero-contact-item:hover {
-      color: rgba(255, 255, 255, 0.9);
+      color: #00f2fe;
+      transform: translateY(-1px);
     }
 
     .hero-contact-dot {
-      color: rgba(255, 255, 255, 0.2);
+      color: rgba(255, 255, 255, 0.25);
       font-size: 16px;
     }
 
