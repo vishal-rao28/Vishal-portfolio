@@ -923,4 +923,214 @@
     });
   }
 
+
+  // ─── AVAILABILITY MODAL ───
+  const availStatusPill = document.getElementById('availStatusPill');
+  const hireModal = document.getElementById('hireModal');
+  const hireModalCloseBtn = document.getElementById('hireModalCloseBtn');
+
+  function openHireModal() {
+    if (!hireModal) return;
+    hireModal.classList.add('active');
+    playSound('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeHireModal() {
+    if (!hireModal) return;
+    hireModal.classList.remove('active');
+    playSound('click');
+    document.body.style.overflow = '';
+  }
+
+  if (availStatusPill) availStatusPill.addEventListener('click', openHireModal);
+  if (hireModalCloseBtn) hireModalCloseBtn.addEventListener('click', closeHireModal);
+  if (hireModal) {
+    hireModal.addEventListener('click', (e) => {
+      if (e.target === hireModal) closeHireModal();
+    });
+  }
+
+  // ─── SKILLS VIEW TOGGLE (CARDS vs PROFICIENCY MATRIX) ───
+  const skillsViewBtns = document.querySelectorAll('[data-skills-view]');
+  const skillsCardsView = document.getElementById('skillsCardsView');
+  const skillsMatrixView = document.getElementById('skillsMatrixView');
+
+  skillsViewBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      skillsViewBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.dataset.skillsView;
+
+      if (view === 'cards') {
+        if (skillsCardsView) skillsCardsView.style.display = 'grid';
+        if (skillsMatrixView) skillsMatrixView.classList.remove('active');
+      } else {
+        if (skillsCardsView) skillsCardsView.style.display = 'none';
+        if (skillsMatrixView) skillsMatrixView.classList.add('active');
+      }
+    });
+  });
+
+  // ─── LIVE CODE INSPECTOR PLAYGROUND ───
+  const codeSnippets = {
+    swiftui: `// Clean MVVM + Combine Reactive Pipeline
+<span class="code-keyword">import</span> <span class="code-type">SwiftUI</span>
+<span class="code-keyword">import</span> <span class="code-type">Combine</span>
+
+<span class="code-keyword">final class</span> <span class="code-type">TelemetryViewModel</span>: <span class="code-type">ObservableObject</span> {
+    @<span class="code-type">Published</span> <span class="code-keyword">private(set) var</span> streamMetrics: [<span class="code-type">MetricNode</span>] = []
+    @<span class="code-type">Published</span> <span class="code-keyword">private(set) var</span> isConnected: <span class="code-type">Bool</span> = <span class="code-keyword">false</span>
+    <span class="code-keyword">private var</span> cancellables = <span class="code-type">Set</span>&lt;<span class="code-type">AnyCancellable</span>&gt;()
+
+    <span class="code-keyword">func</span> <span class="code-func">subscribeToTelemetry</span>() {
+        <span class="code-type">NetworkService</span>.shared.telemetryPublisher()
+            .receive(on: <span class="code-type">DispatchQueue</span>.main)
+            .sink(receiveCompletion: { completion <span class="code-keyword">in</span>
+                <span class="code-keyword">if case</span> .failure(let err) = completion {
+                    <span class="code-func">print</span>(<span class="code-str">"Stream fault: \(err)"</span>)
+                }
+            }, receiveValue: { [weak self] nodes <span class="code-keyword">in</span>
+                self?.streamMetrics = nodes
+                self?.isConnected = <span class="code-keyword">true</span>
+            })
+            .store(in: &cancellables)
+    }
+}`,
+    coreml: `// Core ML Vision Pipeline on Apple Neural Engine (ANE)
+<span class="code-keyword">import</span> <span class="code-type">CoreML</span>
+<span class="code-keyword">import</span> <span class="code-type">Vision</span>
+
+<span class="code-keyword">final class</span> <span class="code-type">ClinicalVisionClassifier</span> {
+    <span class="code-keyword">private var</span> request: <span class="code-type">VNCoreMLRequest</span>?
+
+    <span class="code-keyword">init</span>() {
+        <span class="code-keyword">guard let</span> model = <span class="code-keyword">try</span>? <span class="code-type">VNCoreMLModel</span>(for: <span class="code-type">SmartUlcerModel</span>().model) <span class="code-keyword">else</span> { <span class="code-keyword">return</span> }
+        request = <span class="code-type">VNCoreMLRequest</span>(model: model) { [weak self] req, _ <span class="code-keyword">in</span>
+            <span class="code-keyword">guard let</span> results = req.results <span class="code-keyword">as</span>? [<span class="code-type">VNClassificationObservation</span>],
+                  <span class="code-keyword">let</span> top = results.first <span class="code-keyword">else</span> { <span class="code-keyword">return</span> }
+            <span class="code-comment">// Sub-second prediction on ANE</span>
+            <span class="code-func">print</span>(<span class="code-str">"Label: \(top.identifier) | Confidence: \(top.confidence * 100)%"</span>)
+        }
+    }
+}`,
+    qa: `// Appium Automated UI & Latency Assertion Flow
+<span class="code-keyword">const</span> { remote } = <span class="code-keyword">require</span>(<span class="code-str">'webdriverio'</span>);
+
+<span class="code-keyword">async function</span> <span class="code-func">runAppiumSuite</span>() {
+    <span class="code-keyword">const</span> driver = <span class="code-keyword">await</span> remote({
+        capabilities: {
+            platformName: <span class="code-str">'iOS'</span>,
+            automationName: <span class="code-str">'XCUITest'</span>,
+            bundleId: <span class="code-str">'com.vianasft.viana360'</span>,
+            noReset: <span class="code-keyword">true</span>
+        }
+    });
+
+    <span class="code-comment">// Verify telemetry stream latency</span>
+    <span class="code-keyword">const</span> chartCard = <span class="code-keyword">await</span> driver.$(<span class="code-str">'~telemetryChart'</span>);
+    <span class="code-keyword">await</span> chartCard.waitForDisplayed({ timeout: <span class="code-str">3000</span> });
+    <span class="code-func">expect</span>(<span class="code-keyword">await</span> chartCard.isDisplayed()).toBe(<span class="code-keyword">true</span>);
+    <span class="code-keyword">await</span> driver.deleteSession();
+}`
+  };
+
+  const codeSnippetDisplay = document.getElementById('codeSnippetDisplay');
+  const inspectorTabBtns = document.querySelectorAll('.inspector-tab-btn');
+  const copyCodeSnippetBtn = document.getElementById('copyCodeSnippetBtn');
+  let currentSnippetKey = 'swiftui';
+
+  function displaySnippet(key) {
+    if (!codeSnippetDisplay) return;
+    currentSnippetKey = key;
+    codeSnippetDisplay.innerHTML = codeSnippets[key] || '';
+  }
+  displaySnippet('swiftui');
+
+  inspectorTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      inspectorTabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const snippetKey = btn.dataset.snippet;
+      if (snippetKey) displaySnippet(snippetKey);
+    });
+  });
+
+  if (copyCodeSnippetBtn) {
+    copyCodeSnippetBtn.addEventListener('click', () => {
+      const plainText = codeSnippetDisplay ? codeSnippetDisplay.innerText : '';
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(plainText).then(() => {
+          playSound('success');
+          showToast('✓ Swift / QA Code snippet copied!');
+        });
+      }
+    });
+  }
+
+  // ─── PROJECTS VIEW TOGGLE (LIST vs IPHONE SIMULATOR) ───
+  const projectsViewBtns = document.querySelectorAll('[data-projects-view]');
+  const projectsList = document.querySelector('.projects-list');
+  const projectFilterTabs = document.querySelector('.project-filter-tabs');
+  const iphoneSimulatorContainer = document.getElementById('iphoneSimulatorContainer');
+
+  projectsViewBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      projectsViewBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const view = btn.dataset.projectsView;
+
+      if (view === 'list') {
+        if (projectsList) projectsList.style.display = 'flex';
+        if (projectFilterTabs) projectFilterTabs.style.display = 'flex';
+        if (iphoneSimulatorContainer) iphoneSimulatorContainer.classList.remove('active');
+      } else {
+        if (projectsList) projectsList.style.display = 'none';
+        if (projectFilterTabs) projectFilterTabs.style.display = 'none';
+        if (iphoneSimulatorContainer) iphoneSimulatorContainer.classList.add('active');
+      }
+    });
+  });
+
+  // ─── IPHONE SIMULATOR APP SWITCHER ───
+  const simAppChips = document.querySelectorAll('.sim-app-chip');
+  const simAppCards = document.querySelectorAll('.app-screen-card');
+
+  simAppChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      playSound('click');
+      simAppChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      const appId = chip.dataset.simapp;
+
+      simAppCards.forEach(card => {
+        card.classList.toggle('active', card.id === 'sim-' + appId);
+      });
+    });
+  });
+
+  // Live status bar clock updater
+  function updateSimClock() {
+    const clockEl = document.getElementById('simClock');
+    if (!clockEl) return;
+    const now = new Date();
+    let hours = now.getHours();
+    let mins = now.getMinutes();
+    clockEl.textContent = hours + ':' + (mins < 10 ? '0' + mins : mins);
+  }
+  updateSimClock();
+  setInterval(updateSimClock, 30000);
+
+  // Dynamic Island tap interaction
+  const dynamicIsland = document.getElementById('dynamicIsland');
+  if (dynamicIsland) {
+    dynamicIsland.addEventListener('click', () => {
+      playSound('success');
+      showToast('Dynamic Island: iOS Simulation Engine Active');
+    });
+  }
+
 })();

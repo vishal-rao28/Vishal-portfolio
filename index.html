@@ -508,7 +508,7 @@
     <div class="hero-ring hero-ring-3"></div>
 
     <div class="hero-badge badge-1 reveal-badge">
-      <div class="badge-num">2+</div>
+      <div class="badge-num">6+</div>
       <div class="badge-label">Apps Built</div>
     </div>
     <div class="hero-badge badge-2 reveal-badge">
@@ -539,6 +539,10 @@
 
       <!-- RIGHT: CONTENT -->
       <div class="hero-inner">
+        <button class="avail-status-pill" id="availStatusPill" title="Click to view availability & quick hire details">
+          <span class="avail-pulse-dot"></span>
+          <span>Available for iOS Dev &amp; QA Roles</span>
+        </button>
         <div class="hero-eyebrow">iOS Developer &nbsp;·&nbsp; Technical Engineer &nbsp;·&nbsp; B.Tech AI &amp; DS</div>
 
         <div class="hero-name-wrap" id="hero-tilt">
@@ -639,7 +643,13 @@
     <div class="section-inner">
       <div class="section-label reveal">02 — Tech Stack</div>
       <h2 class="section-heading reveal">SKILLS &amp;<br><em>EXPERTISE</em></h2>
-      <div class="skills-grid">
+      <div class="section-view-toggle reveal">
+        <button class="view-toggle-btn active" data-skills-view="cards">🗂️ Cards View</button>
+        <button class="view-toggle-btn" data-skills-view="matrix">📊 Proficiency Matrix</button>
+      </div>
+
+      <!-- VIEW 1: CARDS -->
+      <div class="skills-grid" id="skillsCardsView">
 
         <div class="skill-card reveal">
           <div class="skill-glow"></div>
@@ -693,7 +703,92 @@
             <span class="tag">REST APIs</span><span class="tag">Git</span><span class="tag">Code Review</span>
           </div>
         </div>
+      </div><!-- end skills-grid -->
+
+      <!-- VIEW 2: PROFICIENCY MATRIX -->
+      <div class="skills-matrix-view" id="skillsMatrixView">
+        <div class="matrix-card">
+          <div class="matrix-top">
+            <span class="matrix-title">iOS Native &amp; SwiftUI</span>
+            <span class="matrix-percent">95%</span>
+          </div>
+          <div class="matrix-bar-track">
+            <div class="matrix-bar-fill" style="width: 95%;"></div>
+          </div>
+          <div class="matrix-meta">SwiftUI, UIKit, Combine, MapKit, HealthKit, PhotosUI. 5 production applications live on App Store.</div>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-top">
+            <span class="matrix-title">Multi-Platform Automated QA</span>
+            <span class="matrix-percent">92%</span>
+          </div>
+          <div class="matrix-bar-track">
+            <div class="matrix-bar-fill" style="width: 92%;"></div>
+          </div>
+          <div class="matrix-meta">Selenium (Web), Appium (Mobile iOS/Android), Postman API automated regression suites.</div>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-top">
+            <span class="matrix-title">Core ML &amp; Vision Intelligence</span>
+            <span class="matrix-percent">88%</span>
+          </div>
+          <div class="matrix-bar-track">
+            <div class="matrix-bar-fill" style="width: 88%;"></div>
+          </div>
+          <div class="matrix-meta">Quantized Convolutional Neural Networks on Apple Neural Engine (ANE) for sub-second clinical inference.</div>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-top">
+            <span class="matrix-title">Combine &amp; Concurrency</span>
+            <span class="matrix-percent">90%</span>
+          </div>
+          <div class="matrix-bar-track">
+            <div class="matrix-bar-fill" style="width: 90%;"></div>
+          </div>
+          <div class="matrix-meta">Reactive data pipelines, async/await concurrency, publisher chains, real-time telemetry streaming.</div>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-top">
+            <span class="matrix-title">Persistence &amp; Databases</span>
+            <span class="matrix-percent">86%</span>
+          </div>
+          <div class="matrix-bar-track">
+            <div class="matrix-bar-fill" style="width: 86%;"></div>
+          </div>
+          <div class="matrix-meta">Offline-first Core Data schema architecture, MySQL, ROOM DB, secure Keychain token storage.</div>
+        </div>
+
+        <div class="matrix-card">
+          <div class="matrix-top">
+            <span class="matrix-title">Security &amp; Load Benchmarking</span>
+            <span class="matrix-percent">89%</span>
+          </div>
+          <div class="matrix-bar-track">
+            <div class="matrix-bar-fill" style="width: 89%;"></div>
+          </div>
+          <div class="matrix-meta">Backend vulnerability assessments, endpoint stress simulations, throughput and latency optimization.</div>
+        </div>
+      </div><!-- end skills-matrix-view -->
+
+      <!-- LIVE CODE INSPECTOR -->
+      <div class="code-inspector-section reveal">
+        <div class="inspector-header">
+          <div class="inspector-tabs">
+            <button class="inspector-tab-btn active" data-snippet="swiftui">SwiftUI + Combine MVVM</button>
+            <button class="inspector-tab-btn" data-snippet="coreml">Core ML Vision Pipeline</button>
+            <button class="inspector-tab-btn" data-snippet="qa">Appium / Selenium Test</button>
+          </div>
+          <button class="copy-code-btn" id="copyCodeSnippetBtn">Copy Code</button>
+        </div>
+        <div class="code-block-wrap">
+          <pre><code id="codeSnippetDisplay"></code></pre>
+        </div>
       </div>
+
     </div>
   </section>
 
@@ -702,6 +797,10 @@
     <div class="section-inner">
       <div class="section-label reveal">03 — Work</div>
       <h2 class="section-heading reveal">FEATURED<br><em>PROJECTS</em></h2>
+      <div class="section-view-toggle reveal">
+        <button class="view-toggle-btn active" data-projects-view="list">📋 List View</button>
+        <button class="view-toggle-btn" data-projects-view="simulator">📱 Interactive iPhone Simulator</button>
+      </div>
       <div class="project-filter-tabs reveal">
         <button class="filter-tab active" data-filter="all">All Projects <span class="tab-badge">6</span></button>
         <button class="filter-tab" data-filter="ai">Medical AI &amp; Vision <span class="tab-badge">1</span></button>
@@ -856,7 +955,185 @@
           <div class="proj-arrow">→</div>
         </div>
 
-      </div>
+      </div><!-- end projects-list -->
+
+      <!-- INTERACTIVE IPHONE SIMULATOR CONTAINER -->
+      <div class="iphone-simulator-container" id="iphoneSimulatorContainer">
+        <div class="simulator-app-tabs">
+          <button class="sim-app-chip active" data-simapp="viana360">Viana 360</button>
+          <button class="sim-app-chip" data-simapp="ulcer">Smart Ulcer AI</button>
+          <button class="sim-app-chip" data-simapp="breathtrack">BreathTrack</button>
+          <button class="sim-app-chip" data-simapp="corecare">CoreCare</button>
+          <button class="sim-app-chip" data-simapp="hairjourney">HairJourney</button>
+        </div>
+
+        <div class="iphone-frame">
+          <div class="iphone-dynamic-island" id="dynamicIsland">
+            <span class="island-dot"></span>
+            <span class="island-wave"></span>
+          </div>
+
+          <div class="iphone-status-bar">
+            <span id="simClock">9:41</span>
+            <span>􀙇 􀛨 100%</span>
+          </div>
+
+          <div class="iphone-screen">
+            <!-- APP 1: VIANA 360 -->
+            <div class="app-screen-card active" id="sim-viana360">
+              <div class="sim-app-header">
+                <div class="sim-app-icon">📊</div>
+                <div>
+                  <div class="sim-app-title">Viana 360</div>
+                  <div class="sim-app-cat">Institutional Telemetry</div>
+                </div>
+              </div>
+              <div class="sim-ui-mockup">
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">System State</span>
+                  <span class="mockup-stat-val">OPTIMAL (99.9%)</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Active Endpoints</span>
+                  <span class="mockup-stat-val">128 Stream Nodes</span>
+                </div>
+                <div class="mockup-chart-bars">
+                  <div class="m-bar" style="height: 35%;"></div>
+                  <div class="m-bar" style="height: 60%;"></div>
+                  <div class="m-bar" style="height: 85%;"></div>
+                  <div class="m-bar" style="height: 45%;"></div>
+                  <div class="m-bar" style="height: 95%;"></div>
+                  <div class="m-bar" style="height: 70%;"></div>
+                </div>
+              </div>
+              <div class="sim-cta-row">
+                <a href="https://apps.apple.com/in/app/viana-360/id6760163659" target="_blank" rel="noopener" class="sim-cta-btn">App Store ↗</a>
+                <button class="sim-cta-ghost" onclick="openProjectModal('viana360')">Inspect Specs</button>
+              </div>
+            </div>
+
+            <!-- APP 2: ULCER AI -->
+            <div class="app-screen-card" id="sim-ulcer">
+              <div class="sim-app-header">
+                <div class="sim-app-icon">🔬</div>
+                <div>
+                  <div class="sim-app-title">Ulcer Predictor</div>
+                  <div class="sim-app-cat">Clinical Vision AI</div>
+                </div>
+              </div>
+              <div class="sim-ui-mockup">
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Neural Engine</span>
+                  <span class="mockup-stat-val">ANE Active</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Inference Time</span>
+                  <span class="mockup-stat-val">0.08s (Sub-Second)</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Prediction</span>
+                  <span class="mockup-stat-val">HEALING (98.4%)</span>
+                </div>
+              </div>
+              <div class="sim-cta-row">
+                <a href="https://apps.apple.com/in/app/smart-ulcer-predictor/id6755873140" target="_blank" rel="noopener" class="sim-cta-btn">App Store ↗</a>
+                <button class="sim-cta-ghost" onclick="openProjectModal('ulcer')">Inspect Specs</button>
+              </div>
+            </div>
+
+            <!-- APP 3: BREATHTRACK -->
+            <div class="app-screen-card" id="sim-breathtrack">
+              <div class="sim-app-header">
+                <div class="sim-app-icon">🫁</div>
+                <div>
+                  <div class="sim-app-title">BreathTrack</div>
+                  <div class="sim-app-cat">COPD Care &amp; HealthKit</div>
+                </div>
+              </div>
+              <div class="sim-ui-mockup">
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">SpO2 Level</span>
+                  <span class="mockup-stat-val">98% Normal</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Lung Capacity (FVC)</span>
+                  <span class="mockup-stat-val">4.2 Liters</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Clinician Sync</span>
+                  <span class="mockup-stat-val">Connected</span>
+                </div>
+              </div>
+              <div class="sim-cta-row">
+                <a href="https://apps.apple.com/in/app/breathtrack/id6804558579" target="_blank" rel="noopener" class="sim-cta-btn">App Store ↗</a>
+                <button class="sim-cta-ghost" onclick="openProjectModal('breathtrack')">Inspect Specs</button>
+              </div>
+            </div>
+
+            <!-- APP 4: CORECARE -->
+            <div class="app-screen-card" id="sim-corecare">
+              <div class="sim-app-header">
+                <div class="sim-app-icon">🌿</div>
+                <div>
+                  <div class="sim-app-title">CoreCare</div>
+                  <div class="sim-app-cat">Wellness &amp; Analytics</div>
+                </div>
+              </div>
+              <div class="sim-ui-mockup">
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Daily Hydration</span>
+                  <span class="mockup-stat-val">2,400 ml (80%)</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Core Data Cache</span>
+                  <span class="mockup-stat-val">Local SQLite</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Routines Logged</span>
+                  <span class="mockup-stat-val">5 / 5 Done</span>
+                </div>
+              </div>
+              <div class="sim-cta-row">
+                <a href="https://apps.apple.com/in/app/corecare/id6753789920" target="_blank" rel="noopener" class="sim-cta-btn">App Store ↗</a>
+                <button class="sim-cta-ghost" onclick="openProjectModal('corecare')">Inspect Specs</button>
+              </div>
+            </div>
+
+            <!-- APP 5: HAIRJOURNEY -->
+            <div class="app-screen-card" id="sim-hairjourney">
+              <div class="sim-app-header">
+                <div class="sim-app-icon">✨</div>
+                <div>
+                  <div class="sim-app-title">HairJourney</div>
+                  <div class="sim-app-cat">Visual Regimen Companion</div>
+                </div>
+              </div>
+              <div class="sim-ui-mockup">
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Photos Logged</span>
+                  <span class="mockup-stat-val">24 Milestones</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Next Wash Day</span>
+                  <span class="mockup-stat-val">Tomorrow 9:00 AM</span>
+                </div>
+                <div class="mockup-stat-row">
+                  <span class="mockup-stat-label">Growth Rate</span>
+                  <span class="mockup-stat-val">+1.2 cm / mo</span>
+                </div>
+              </div>
+              <div class="sim-cta-row">
+                <a href="https://apps.apple.com/in/app/hairjourneytracker/id6760697820" target="_blank" rel="noopener" class="sim-cta-btn">App Store ↗</a>
+                <button class="sim-cta-ghost" onclick="openProjectModal('hairjourney')">Inspect Specs</button>
+              </div>
+            </div>
+
+          </div><!-- end iphone-screen -->
+
+          <div class="iphone-home-bar"></div>
+        </div><!-- end iphone-frame -->
+      </div><!-- end iphone-simulator-container -->
+
     </div>
   </section>
 
@@ -1267,6 +1544,54 @@
 
   <!-- ════════════════ TOAST NOTIFICATION ════════════════ -->
   <div id="toast" class="toast-notification"></div>
+
+  <!-- ════════════════ QUICK HIRE & AVAILABILITY MODAL ════════════════ -->
+  <div id="hireModal" class="hire-modal-overlay">
+    <div class="hire-modal-window">
+      <div class="hire-header">
+        <div>
+          <span class="hire-spec-label">Direct Candidate Engagement</span>
+          <h3 class="hire-title">Vishal Rao M</h3>
+        </div>
+        <button class="modal-close-btn" id="hireModalCloseBtn" aria-label="Close modal">✕</button>
+      </div>
+
+      <div class="hire-specs">
+        <div class="hire-spec-item">
+          <span class="hire-spec-label">Current Status</span>
+          <span class="hire-spec-val" style="color:#34d399;">● Actively Evaluating Roles</span>
+        </div>
+        <div class="hire-spec-item">
+          <span class="hire-spec-label">Primary Target Roles</span>
+          <span class="hire-spec-val">iOS Developer · QA Technical Engineer</span>
+        </div>
+        <div class="hire-spec-item">
+          <span class="hire-spec-label">Base Location</span>
+          <span class="hire-spec-val">Chennai, India (Open to Remote / Relocation)</span>
+        </div>
+        <div class="hire-spec-item">
+          <span class="hire-spec-label">Timezone Compatibility</span>
+          <span class="hire-spec-val">IST (UTC+5:30) · US/EU Overlap</span>
+        </div>
+      </div>
+
+      <p style="font-size:13.5px;color:rgba(255,255,255,0.7);line-height:1.7;">
+        Available for full-time mobile engineering roles, enterprise automated QA engagements, and high-impact iOS architectural contracts.
+      </p>
+
+      <div class="hire-actions">
+        <a href="tel:+916382190388" class="btn-primary">
+          <span>Call: +91 63821 90388</span>
+        </a>
+        <a href="mailto:vishalrao5432@gmail.com?subject=Opportunity%20Discussion%20with%20Vishal%20Rao" class="btn-ghost">
+          <span>Email Direct ↗</span>
+        </a>
+        <a href="Vishal_Rao_UDI.pdf" target="_blank" rel="noopener" class="btn-ghost">
+          <span>Resume PDF ↗</span>
+        </a>
+      </div>
+    </div>
+  </div>
 
   <script src="https://cdnjs.cloudflare.com/ajax/libs/three.js/r128/three.min.js"></script>
   <script src="js/three-scene.js"></script>
