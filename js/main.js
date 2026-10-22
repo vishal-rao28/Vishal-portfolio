@@ -551,6 +551,7 @@
         printLine('  <span class="t-cyan">experience</span>  - SIMATS, Viana Soft, Greatify history');
         printLine('  <span class="t-cyan">contact</span>     - Email, phone, location & profiles');
         printLine('  <span class="t-cyan">resume</span>      - Open official PDF resume');
+        printLine('  <span class="t-cyan">timezone</span>    - View India (IST) clock & global overlap');
         printLine('  <span class="t-cyan">matrix</span>      - Trigger digital rain Easter egg');
         printLine('  <span class="t-cyan">sudo hire</span>   - Fast track hiring dispatch');
         printLine('  <span class="t-cyan">clear</span>       - Clear console screen');
@@ -605,6 +606,15 @@
 
       case 'clear':
         if (terminalOutput) terminalOutput.innerHTML = '';
+        break;
+
+      case 'tz':
+      case 'timezone':
+        printLine('🇮🇳 India Standard Time (IST): <strong>' + formatTimeForZone('Asia/Kolkata', true) + '</strong> (UTC+5:30)', 'cyan');
+        printLine('🇺🇸 US Eastern (New York): ' + formatTimeForZone('America/New_York') + ' (4-5h Overlap Window)', 'green');
+        printLine('🇬🇧 UK (London): ' + formatTimeForZone('Europe/London') + ' (5-6h Overlap Window)', 'green');
+        printLine('🇸🇬 Singapore / APAC: ' + formatTimeForZone('Asia/Singapore') + ' (Full Day Alignment)', 'green');
+        printLine('💡 Type or click below to launch the interactive World Clocks modal.', 'dim');
         break;
 
       case 'matrix':
@@ -1215,5 +1225,105 @@
   document.querySelectorAll('.ios-layer-card').forEach(card => {
     card.addEventListener('mouseenter', () => playSound('hover'));
   });
+
+
+  // ─── LIVE TIMEZONE & WORLD CLOCKS SYSTEM ───
+  function formatTimeForZone(timeZone, useSeconds = false) {
+    try {
+      const options = {
+        timeZone: timeZone,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: true
+      };
+      if (useSeconds) options.second = '2-digit';
+      return new Intl.DateTimeFormat('en-US', options).format(new Date());
+    } catch (e) {
+      return '--:--';
+    }
+  }
+
+  function formatTime24ForZone(timeZone) {
+    try {
+      const options = {
+        timeZone: timeZone,
+        hour: '2-digit',
+        minute: '2-digit',
+        hour12: false
+      };
+      return new Intl.DateTimeFormat('en-GB', options).format(new Date());
+    } catch (e) {
+      return '--:--';
+    }
+  }
+
+  function updateAllWorldClocks() {
+    // 1. India Base Time (IST)
+    const istTime24 = formatTime24ForZone('Asia/Kolkata');
+    const istTime12 = formatTimeForZone('Asia/Kolkata', true);
+
+    const navIstTime = document.getElementById('navIstTime');
+    if (navIstTime) navIstTime.textContent = istTime24 + ' IST';
+
+    const heroIstTime = document.getElementById('heroIstTime');
+    if (heroIstTime) heroIstTime.textContent = 'IST (' + istTime24 + ', UTC+5:30)';
+
+    // Update iPhone Simulator clock with IST
+    const simClock = document.getElementById('simClock');
+    if (simClock) simClock.textContent = istTime24;
+
+    // 2. World Clocks in Modal
+    const tzClockIndia = document.getElementById('tzClockIndia');
+    if (tzClockIndia) tzClockIndia.textContent = istTime12;
+
+    const tzClockNewYork = document.getElementById('tzClockNewYork');
+    if (tzClockNewYork) tzClockNewYork.textContent = formatTimeForZone('America/New_York', true);
+
+    const tzClockSanFrancisco = document.getElementById('tzClockSanFrancisco');
+    if (tzClockSanFrancisco) tzClockSanFrancisco.textContent = formatTimeForZone('America/Los_Angeles', true);
+
+    const tzClockLondon = document.getElementById('tzClockLondon');
+    if (tzClockLondon) tzClockLondon.textContent = formatTimeForZone('Europe/London', true);
+
+    const tzClockBerlin = document.getElementById('tzClockBerlin');
+    if (tzClockBerlin) tzClockBerlin.textContent = formatTimeForZone('Europe/Berlin', true);
+
+    const tzClockSingapore = document.getElementById('tzClockSingapore');
+    if (tzClockSingapore) tzClockSingapore.textContent = formatTimeForZone('Asia/Singapore', true);
+  }
+
+  // Update immediately and then every second
+  updateAllWorldClocks();
+  setInterval(updateAllWorldClocks, 1000);
+
+  // Timezone Modal Controls
+  const timezoneModal = document.getElementById('timezoneModal');
+  const navTzBtn = document.getElementById('navTzBtn');
+  const heroTzPill = document.getElementById('heroTzPill');
+  const tzModalCloseBtn = document.getElementById('tzModalCloseBtn');
+
+  window.openTzModal = function() {
+    if (!timezoneModal) return;
+    updateAllWorldClocks();
+    timezoneModal.classList.add('active');
+    playSound('open');
+    document.body.style.overflow = 'hidden';
+  };
+
+  window.closeTzModal = function() {
+    if (!timezoneModal) return;
+    timezoneModal.classList.remove('active');
+    playSound('click');
+    document.body.style.overflow = '';
+  };
+
+  if (navTzBtn) navTzBtn.addEventListener('click', window.openTzModal);
+  if (heroTzPill) heroTzPill.addEventListener('click', window.openTzModal);
+  if (tzModalCloseBtn) tzModalCloseBtn.addEventListener('click', window.closeTzModal);
+  if (timezoneModal) {
+    timezoneModal.addEventListener('click', (e) => {
+      if (e.target === timezoneModal) window.closeTzModal();
+    });
+  }
 
 })();

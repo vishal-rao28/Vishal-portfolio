@@ -493,7 +493,12 @@
       <li><a href="Vishal_Rao_UDI.pdf" target="_blank" rel="noopener">Resume</a></li>
       <li><a href="#contact">Contact</a></li>
     </ul>
-    <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
+    <div class="nav-right" style="display:flex;align-items:center;gap:10px;">
+      <button class="nav-tz-btn" id="navTzBtn" title="Base: India Standard Time (IST) · Click to view Global Overlap">
+        <span class="tz-flag">🇮🇳</span>
+        <span class="tz-time" id="navIstTime">--:-- IST</span>
+        <span class="tz-pulse"></span>
+      </button>
       <div class="theme-palette-switcher" title="Switch Atmospheric Theme">
         <button class="palette-chip active" data-theme="cyan" title="Cosmic Cyan" aria-label="Cosmic Cyan Theme"><span class="chip-color cyan"></span></button>
         <button class="palette-chip" data-theme="violet" title="Cyber Violet" aria-label="Cyber Violet Theme"><span class="chip-color violet"></span></button>
@@ -545,10 +550,17 @@
 
       <!-- RIGHT: CONTENT -->
       <div class="hero-inner">
-        <button class="avail-status-pill" id="availStatusPill" title="Click to view availability & quick hire details">
-          <span class="avail-pulse-dot"></span>
-          <span>Available for iOS Dev &amp; QA Roles</span>
-        </button>
+        <div style="display:flex;flex-wrap:wrap;align-items:center;justify-content:flex-start;gap:8px;margin-bottom:12px;">
+          <button class="avail-status-pill" id="availStatusPill" title="Click to view availability & quick hire details" style="margin-bottom:0;">
+            <span class="avail-pulse-dot"></span>
+            <span>Available for iOS Dev &amp; QA Roles</span>
+          </button>
+          <div class="hero-tz-pill" id="heroTzPill" title="Base: India Standard Time (IST) · Click to view global overlap" style="margin-bottom:0;">
+            <span class="htz-dot"></span>
+            <span>Base: <strong id="heroIstTime">IST (India, UTC+5:30)</strong> · Global Remote Ready</span>
+            <span class="htz-view-btn">Overlap ↗</span>
+          </div>
+        </div>
         <div class="hero-eyebrow">iOS Developer &nbsp;·&nbsp; Technical Engineer &nbsp;·&nbsp; B.Tech AI &amp; DS</div>
 
         <div class="hero-name-wrap" id="hero-tilt">
@@ -1601,6 +1613,101 @@
     </div>
   </div>
 
+  <!-- ════════════════ GLOBAL TIMEZONE OVERLAP MODAL ════════════════ -->
+  <div id="timezoneModal" class="tz-modal-overlay">
+    <div class="tz-modal-window">
+      <div class="tz-modal-header">
+        <div>
+          <span class="tz-base-tag">Primary Work Location &amp; Timezone</span>
+          <h3 class="tz-modal-title">India Standard Time (IST) &amp; Global Overlap</h3>
+        </div>
+        <button class="modal-close-btn" id="tzModalCloseBtn" aria-label="Close timezone modal">✕</button>
+      </div>
+
+      <!-- LIVE WORLD CLOCKS GRID -->
+      <div class="tz-world-clocks-grid">
+        <!-- BASE: INDIA -->
+        <div class="tz-clock-card base-tz">
+          <div class="tz-city-row">
+            <span class="tz-city-name">🇮🇳 Chennai / India</span>
+            <span class="tz-zone-code">IST (UTC+5:30)</span>
+          </div>
+          <div class="tz-time-display" id="tzClockIndia">--:-- --</div>
+          <span class="tz-overlap-tag prime">● Primary Base (09:00 - 20:00)</span>
+        </div>
+
+        <!-- US EASTERN -->
+        <div class="tz-clock-card">
+          <div class="tz-city-row">
+            <span class="tz-city-name">🇺🇸 New York / Toronto</span>
+            <span class="tz-zone-code">EST / EDT (UTC-5)</span>
+          </div>
+          <div class="tz-time-display" id="tzClockNewYork">--:-- --</div>
+          <span class="tz-overlap-tag prime">4-5 Hours Sync Overlap</span>
+        </div>
+
+        <!-- US PACIFIC -->
+        <div class="tz-clock-card">
+          <div class="tz-city-row">
+            <span class="tz-city-name">🇺🇸 San Francisco / Silicon Valley</span>
+            <span class="tz-zone-code">PST / PDT (UTC-8)</span>
+          </div>
+          <div class="tz-time-display" id="tzClockSanFrancisco">--:-- --</div>
+          <span class="tz-overlap-tag overlap">3-4 Hours Sprint Alignment</span>
+        </div>
+
+        <!-- UK / LONDON -->
+        <div class="tz-clock-card">
+          <div class="tz-city-row">
+            <span class="tz-city-name">🇬🇧 London / UK</span>
+            <span class="tz-zone-code">GMT / BST (UTC+1)</span>
+          </div>
+          <div class="tz-time-display" id="tzClockLondon">--:-- --</div>
+          <span class="tz-overlap-tag prime">5-6 Hours Workday Overlap</span>
+        </div>
+
+        <!-- EUROPE / BERLIN -->
+        <div class="tz-clock-card">
+          <div class="tz-city-row">
+            <span class="tz-city-name">🇩🇪 Berlin / Paris</span>
+            <span class="tz-zone-code">CET / CEST (UTC+2)</span>
+          </div>
+          <div class="tz-time-display" id="tzClockBerlin">--:-- --</div>
+          <span class="tz-overlap-tag prime">5-6 Hours Workday Overlap</span>
+        </div>
+
+        <!-- SINGAPORE / APAC -->
+        <div class="tz-clock-card">
+          <div class="tz-city-row">
+            <span class="tz-city-name">🇸🇬 Singapore / UAE</span>
+            <span class="tz-zone-code">SGT (UTC+8) / GST</span>
+          </div>
+          <div class="tz-time-display" id="tzClockSingapore">--:-- --</div>
+          <span class="tz-overlap-tag prime">Full Business Day Alignment</span>
+        </div>
+      </div>
+
+      <!-- OVERLAP WORKFLOW EXPLANATION -->
+      <div class="tz-explain-box">
+        <p>
+          <strong>🌏 Seamless Global Cross-Timezone Collaboration:</strong><br>
+          Based in <strong>Chennai, India (IST)</strong>, I am fully equipped for remote engineering and synchronous team collaboration across North America, Europe, the UK, and APAC.
+        </p>
+        <ul style="margin-top:8px;padding-left:18px;display:flex;flex-direction:column;gap:6px;">
+          <li><strong>US Teams (EST/PST):</strong> 4 to 5 hours of direct synchronous overlap every day (morning US / evening IST), ideal for agile standups, architecture reviews, and sprint planning.</li>
+          <li><strong>UK &amp; European Teams (BST/CET):</strong> 5 to 6 prime working hours shared directly across the central workday.</li>
+          <li><strong>Async Rigor:</strong> Clear GitHub PR documentation, automated Appium/Selenium CI reports, and daily asynchronous updates so velocity never slows down.</li>
+        </ul>
+      </div>
+
+      <div style="display:flex;justify-content:flex-end;gap:12px;">
+        <button class="btn-primary" onclick="closeTzModal();openHireModal();">
+          <span>Discuss Timezone / Engagement ↗</span>
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- ════════════════ QUICK HIRE & AVAILABILITY MODAL ════════════════ -->
   <div id="hireModal" class="hire-modal-overlay">
     <div class="hire-modal-window">
@@ -1627,7 +1734,7 @@
         </div>
         <div class="hire-spec-item">
           <span class="hire-spec-label">Timezone Compatibility</span>
-          <span class="hire-spec-val">IST (UTC+5:30) · US/EU Overlap</span>
+          <span class="hire-spec-val" style="color:var(--accent-cyan);cursor:pointer;" onclick="openTzModal();">🇮🇳 IST (UTC+5:30) · Click for Global Overlap ↗</span>
         </div>
       </div>
 
