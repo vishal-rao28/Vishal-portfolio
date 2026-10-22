@@ -361,10 +361,42 @@
 
   animate();
 
-  window.addEventListener('resize', () => {
-    camera.aspect = window.innerWidth / window.innerHeight;
-    camera.updateProjectionMatrix();
-    renderer.setSize(window.innerWidth, window.innerHeight);
-  }, { passive: true });
+  // ─── 6. DYNAMIC THEME SWITCHER INTEGRATION ───
+  window.setThreeTheme = function (themeName) {
+    let newPalette, meshColor;
+    if (themeName === 'swift') {
+      newPalette = [new THREE.Color(0xff5e3a), new THREE.Color(0xec4899), new THREE.Color(0xa855f7), new THREE.Color(0xf59e0b), new THREE.Color(0xffffff)];
+      meshColor = 0xff5e3a;
+    } else if (themeName === 'matrix') {
+      newPalette = [new THREE.Color(0x00f5d4), new THREE.Color(0x10b981), new THREE.Color(0x34d399), new THREE.Color(0x06b6d4), new THREE.Color(0xffffff)];
+      meshColor = 0x00f5d4;
+    } else if (themeName === 'titanium') {
+      newPalette = [new THREE.Color(0xffffff), new THREE.Color(0xcbd5e1), new THREE.Color(0x94a3b8), new THREE.Color(0x64748b), new THREE.Color(0x38bdf8)];
+      meshColor = 0xffffff;
+    } else { // cyber (default)
+      newPalette = [new THREE.Color(0x007aff), new THREE.Color(0x00f2fe), new THREE.Color(0x8b5cf6), new THREE.Color(0x00f5d4), new THREE.Color(0xffffff)];
+      meshColor = 0x007aff;
+    }
+    terrainMat.color.setHex(meshColor);
+    ring1.material.color.setHex(meshColor);
+    icoMesh.material.color.setHex(meshColor);
+    const colors = particleGeo.attributes.color.array;
+    for (let i = 0; i < N; i++) {
+      const col = newPalette[Math.floor(Math.random() * palette.length)];
+      pColors[i * 3]     = col.r;
+      pColors[i * 3 + 1] = col.g;
+      pColors[i * 3 + 2] = col.b;
+      colors[i * 3]     = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
+    }
+    particleGeo.attributes.color.needsUpdate = true;
+  };
+
+  // Restore saved theme on load if any
+  const savedTheme = localStorage.getItem('portfolio_theme');
+  if (savedTheme) {
+    window.setThreeTheme(savedTheme);
+  }
 
 })();

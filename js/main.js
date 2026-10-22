@@ -101,31 +101,153 @@
       `perspective(800px) rotateY(${xOff}deg) rotateX(${-yOff}deg)`;
   });
 
-  // ─── NAVBAR SCROLL ───
+  // ─── AUDIO SYNTHESIZER FEEDBACK ───
+  let audioEnabled = false;
+  let audioCtx = null;
+
+  function playUiClick(freq = 640, type = 'sine') {
+    if (!audioEnabled) return;
+    try {
+      if (!audioCtx) audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = type;
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.025, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.0001, audioCtx.currentTime + 0.08);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + 0.08);
+    } catch (e) {}
+  }
+
+  const soundBtn = document.getElementById('soundToggleBtn');
+  if (soundBtn) {
+    soundBtn.addEventListener('click', () => {
+      audioEnabled = !audioEnabled;
+      soundBtn.classList.toggle('sound-on', audioEnabled);
+      soundBtn.querySelector('.sound-icon').textContent = audioEnabled ? '🔊' : '🔈';
+      if (audioEnabled) playUiClick(880);
+    });
+  }
+
+  // ─── SCROLL TELEMETRY & SCROLLSPY ───
   const navbar = document.getElementById('navbar');
+  const progressBar = document.getElementById('scroll-progress-bar');
+  const sections = document.querySelectorAll('section[id]');
+  const navLinks = document.querySelectorAll('.nav-links a');
+
   window.addEventListener('scroll', () => {
+    // 1. Progress Bar
+    if (progressBar) {
+      const totalScroll = document.documentElement.scrollHeight - window.innerHeight;
+      const progress = totalScroll > 0 ? (window.scrollY / totalScroll) * 100 : 0;
+      progressBar.style.width = Math.min(100, Math.max(0, progress)) + '%';
+    }
+
+    // 2. Navbar Scrolled
     if (window.scrollY > 60) navbar.classList.add('scrolled');
     else navbar.classList.remove('scrolled');
-  });
 
-  // ─── PROJECT ROW HOVER SOUND (subtle visual pulse) ───
+    // 3. Scrollspy active link
+    const scrollPos = window.scrollY + 200;
+    sections.forEach(sec => {
+      const top = sec.offsetTop;
+      const height = sec.offsetHeight;
+      const id = sec.getAttribute('id');
+      if (scrollPos >= top && scrollPos < top + height) {
+        navLinks.forEach(link => {
+          link.classList.remove('active');
+          if (link.getAttribute('href') === `#${id}`) {
+            link.classList.add('active');
+          }
+        });
+      }
+    });
+  }, { passive: true });
+
+  // ─── PROJECT ROW HOVER & INTERACTION ───
   document.querySelectorAll('.proj-row').forEach(row => {
     row.addEventListener('mouseenter', () => {
       row.style.transition = 'all .4s';
     });
+    row.addEventListener('click', () => {
+      playUiClick(580);
+    });
+  });
+
+  // ─── INTERACTIVE PROJECT FILTER TABS ───
+  const filterTabs = document.querySelectorAll('.filter-tab');
+  const projectRows = document.querySelectorAll('.proj-row');
+
+  filterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      playUiClick(720);
+      filterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+
+      const filterVal = tab.getAttribute('data-filter');
+
+      projectRows.forEach(row => {
+        const cat = row.getAttribute('data-category') || '';
+        if (filterVal === 'all' || cat.includes(filterVal)) {
+          row.style.display = 'grid';
+          setTimeout(() => {
+            row.style.opacity = '1';
+            row.style.transform = 'translateY(0) scale(1)';
+          }, 20);
+        } else {
+          row.style.opacity = '0';
+          row.style.transform = 'translateY(12px) scale(0.98)';
+          setTimeout(() => {
+            row.style.display = 'none';
+          }, 300);
+        }
+      });
+    });
+  });
+
+  // ─── INTERACTIVE THEME CONTROLLER DOCK ───
+  const themeBtns = document.querySelectorAll('[data-set-theme]');
+  const currentSavedTheme = localStorage.getItem('portfolio_theme') || 'cyber';
+
+  function applyTheme(themeName) {
+    document.documentElement.setAttribute('data-theme', themeName);
+    localStorage.setItem('portfolio_theme', themeName);
+    themeBtns.forEach(btn => {
+      btn.classList.toggle('active', btn.getAttribute('data-set-theme') === themeName);
+    });
+    if (typeof window.setThreeTheme === 'function') {
+      window.setThreeTheme(themeName);
+    }
+  }
+
+  // Set initial theme
+  applyTheme(currentSavedTheme);
+
+  themeBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      playUiClick(940);
+      const chosenTheme = btn.getAttribute('data-set-theme');
+      applyTheme(chosenTheme);
+    });
   });
 
   // ─── MAGNETIC BUTTONS ───
-  document.querySelectorAll('.btn-primary, .btn-ghost').forEach(btn => {
+  document.querySelectorAll('.btn-primary, .btn-ghost, .theme-btn, .filter-tab').forEach(btn => {
     btn.addEventListener('mousemove', function(e) {
       const rect = this.getBoundingClientRect();
       const x = e.clientX - rect.left - rect.width  / 2;
       const y = e.clientY - rect.top  - rect.height / 2;
-      this.style.transform = `translate(${x * 0.15}px, ${y * 0.15}px) translateY(-3px)`;
+      this.style.transform = `translate(${x * 0.12}px, ${y * 0.12}px) translateY(-2px)`;
     });
     btn.addEventListener('mouseleave', function() {
       this.style.transform = '';
       this.style.transition = 'transform .4s ease';
+    });
+    btn.addEventListener('click', () => {
+      playUiClick(800);
     });
   });
 
@@ -151,7 +273,7 @@
 
   // ─── CIRCULAR FAVICON GENERATOR ───
   const faviconImg = new Image();
-  faviconImg.src = 'assets/kaushal.png';
+  faviconImg.src = 'assets/vishal_optimized.jpg';
   faviconImg.onload = function() {
     const canvas = document.createElement('canvas');
     const size = 64;
@@ -163,7 +285,6 @@
     ctx.arc(size/2, size/2, size/2, 0, Math.PI * 2);
     ctx.clip();
     
-    // Maintain aspect ratio while drawing
     const minSide = Math.min(faviconImg.width, faviconImg.height);
     const sx = (faviconImg.width - minSide) / 2;
     const sy = (faviconImg.height - minSide) / 2;
