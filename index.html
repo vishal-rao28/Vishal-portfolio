@@ -830,6 +830,7 @@
               <span>Download on App Store →</span>
             </a>
             <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
+            <button class="proj-qr-btn" data-qr-app="viana360"><span>📱 Install via iPhone QR</span></button>
           </div>
           <div class="proj-arrow">→</div>
         </div>
@@ -856,6 +857,7 @@
               <span>Download on App Store →</span>
             </a>
             <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
+            <button class="proj-qr-btn" data-qr-app="ulcer"><span>📱 Install via iPhone QR</span></button>
           </div>
           <div class="proj-arrow">→</div>
         </div>
@@ -882,6 +884,7 @@
               <span>Download on App Store →</span>
             </a>
             <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
+            <button class="proj-qr-btn" data-qr-app="breathtrack"><span>📱 Install via iPhone QR</span></button>
           </div>
           <div class="proj-arrow">→</div>
         </div>
@@ -908,6 +911,7 @@
               <span>Download on App Store →</span>
             </a>
             <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
+            <button class="proj-qr-btn" data-qr-app="corecare"><span>📱 Install via iPhone QR</span></button>
           </div>
           <div class="proj-arrow">→</div>
         </div>
@@ -933,6 +937,7 @@
               <span>Download on App Store →</span>
             </a>
             <div class="proj-inspect-hint"><span>Inspect Architecture &amp; Details</span> ↗</div>
+            <button class="proj-qr-btn" data-qr-app="hairjourney"><span>📱 Install via iPhone QR</span></button>
           </div>
           <div class="proj-arrow">→</div>
         </div>
@@ -1544,6 +1549,51 @@
 
   <!-- ════════════════ TOAST NOTIFICATION ════════════════ -->
   <div id="toast" class="toast-notification"></div>
+
+  <!-- ════════════════ APP STORE QR CODE MODAL ════════════════ -->
+  <div id="qrModal" class="qr-modal-overlay">
+    <div class="qr-modal-window">
+      <button class="modal-close-btn" id="qrModalCloseBtn" style="align-self:flex-end;" aria-label="Close QR modal">✕</button>
+      <div class="qr-app-icon" id="qrAppIcon">📱</div>
+      <h3 class="qr-title" id="qrAppTitle">Install on iPhone</h3>
+      <p class="qr-subtitle" id="qrAppSubtitle">Point your iPhone camera at this code to view and download directly on the App Store.</p>
+      <div class="qr-box-wrap">
+        <svg class="qr-code-svg" id="qrCodeSvg" viewBox="0 0 100 100">
+          <!-- Stylized High-Tech QR Matrix Pattern -->
+          <rect width="100" height="100" fill="#ffffff"/>
+          <!-- Position Detection Squares -->
+          <rect x="10" y="10" width="24" height="24" fill="#000000"/>
+          <rect x="14" y="14" width="16" height="16" fill="#ffffff"/>
+          <rect x="18" y="18" width="8" height="8" fill="#000000"/>
+
+          <rect x="66" y="10" width="24" height="24" fill="#000000"/>
+          <rect x="70" y="14" width="16" height="16" fill="#ffffff"/>
+          <rect x="74" y="18" width="8" height="8" fill="#000000"/>
+
+          <rect x="10" y="66" width="24" height="24" fill="#000000"/>
+          <rect x="14" y="70" width="16" height="16" fill="#ffffff"/>
+          <rect x="18" y="74" width="8" height="8" fill="#000000"/>
+
+          <!-- Dynamic Bit Patterns -->
+          <rect x="42" y="14" width="6" height="6" fill="#000000"/>
+          <rect x="52" y="14" width="6" height="6" fill="#000000"/>
+          <rect x="42" y="24" width="16" height="6" fill="#000000"/>
+          <rect x="42" y="34" width="6" height="16" fill="#000000"/>
+          <rect x="52" y="44" width="16" height="6" fill="#000000"/>
+          <rect x="24" y="42" width="6" height="16" fill="#000000"/>
+          <rect x="74" y="42" width="16" height="6" fill="#000000"/>
+          <rect x="42" y="66" width="6" height="14" fill="#000000"/>
+          <rect x="52" y="74" width="16" height="6" fill="#000000"/>
+          <rect x="74" y="66" width="16" height="16" fill="#000000"/>
+          <rect x="48" y="52" width="8" height="8" fill="#007aff"/>
+        </svg>
+      </div>
+      <span class="qr-hint">Official Apple App Store Verified</span>
+      <a href="#" target="_blank" rel="noopener" id="qrAppStoreLink" class="btn-primary" style="width:100%;">
+        <span>Open Link Directly ↗</span>
+      </a>
+    </div>
+  </div>
 
   <!-- ════════════════ QUICK HIRE & AVAILABILITY MODAL ════════════════ -->
   <div id="hireModal" class="hire-modal-overlay">

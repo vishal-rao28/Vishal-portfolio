@@ -1133,4 +1133,87 @@
     });
   }
 
+
+  // ─── APP STORE QR CODE MODAL ───
+  const qrAppStoreData = {
+    viana360: {
+      title: 'Viana 360',
+      icon: '📊',
+      url: 'https://apps.apple.com/in/app/viana-360/id6760163659',
+      sub: 'Scan with your iPhone camera to download Viana 360 directly from the Apple App Store.'
+    },
+    ulcer: {
+      title: 'Smart Ulcer Predictor',
+      icon: '🔬',
+      url: 'https://apps.apple.com/in/app/smart-ulcer-predictor/id6755873140',
+      sub: 'Scan to experience clinical on-device deep learning on your iPhone.'
+    },
+    breathtrack: {
+      title: 'BreathTrack',
+      icon: '🫁',
+      url: 'https://apps.apple.com/in/app/breathtrack/id6804558579',
+      sub: 'Scan to install the COPD care and HealthKit telemetry app.'
+    },
+    corecare: {
+      title: 'CoreCare',
+      icon: '🌿',
+      url: 'https://apps.apple.com/in/app/corecare/id6753789920',
+      sub: 'Scan to download the holistic wellness and routine tracking companion.'
+    },
+    hairjourney: {
+      title: 'HairJourneyTracker',
+      icon: '✨',
+      url: 'https://apps.apple.com/in/app/hairjourneytracker/id6760697820',
+      sub: 'Scan to install the milestone photo growth tracker.'
+    }
+  };
+
+  const qrModal = document.getElementById('qrModal');
+  const qrModalCloseBtn = document.getElementById('qrModalCloseBtn');
+  const qrAppIcon = document.getElementById('qrAppIcon');
+  const qrAppTitle = document.getElementById('qrAppTitle');
+  const qrAppSubtitle = document.getElementById('qrAppSubtitle');
+  const qrAppStoreLink = document.getElementById('qrAppStoreLink');
+
+  function openQrModal(appId) {
+    const data = qrAppStoreData[appId];
+    if (!data || !qrModal) return;
+
+    if (qrAppIcon) qrAppIcon.textContent = data.icon;
+    if (qrAppTitle) qrAppTitle.textContent = data.title;
+    if (qrAppSubtitle) qrAppSubtitle.textContent = data.sub;
+    if (qrAppStoreLink) qrAppStoreLink.href = data.url;
+
+    qrModal.classList.add('active');
+    playSound('open');
+    document.body.style.overflow = 'hidden';
+  }
+
+  function closeQrModal() {
+    if (!qrModal) return;
+    qrModal.classList.remove('active');
+    playSound('click');
+    document.body.style.overflow = '';
+  }
+
+  if (qrModalCloseBtn) qrModalCloseBtn.addEventListener('click', closeQrModal);
+  if (qrModal) {
+    qrModal.addEventListener('click', (e) => {
+      if (e.target === qrModal) closeQrModal();
+    });
+  }
+
+  document.querySelectorAll('[data-qr-app]').forEach(btn => {
+    btn.addEventListener('click', (e) => {
+      e.stopPropagation();
+      const appId = btn.dataset.qrApp;
+      if (appId) openQrModal(appId);
+    });
+  });
+
+  // Highlight iOS layer cards on hover with sound
+  document.querySelectorAll('.ios-layer-card').forEach(card => {
+    card.addEventListener('mouseenter', () => playSound('hover'));
+  });
+
 })();
