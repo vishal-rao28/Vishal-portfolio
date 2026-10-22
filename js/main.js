@@ -695,4 +695,232 @@
     });
   }
 
+
+  // ─── ATMOSPHERIC THEME SWITCHER ───
+  const themeChips = document.querySelectorAll('.palette-chip');
+  function setTheme(themeName, playSfx = true) {
+    document.body.dataset.theme = themeName;
+    themeChips.forEach(chip => {
+      chip.classList.toggle('active', chip.dataset.theme === themeName);
+    });
+    localStorage.setItem('vrm_portfolio_theme', themeName);
+    if (playSfx) {
+      playSound('success');
+      const names = { cyan: 'Cosmic Cyan', violet: 'Cyber Violet', emerald: 'Aurora Emerald' };
+      showToast('Atmosphere: ' + (names[themeName] || themeName) + ' Active');
+    }
+  }
+
+  themeChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      const theme = chip.dataset.theme;
+      if (theme) setTheme(theme, true);
+    });
+  });
+
+  // Restore saved theme preference
+  const savedTheme = localStorage.getItem('vrm_portfolio_theme');
+  if (savedTheme && ['cyan', 'violet', 'emerald'].includes(savedTheme)) {
+    setTheme(savedTheme, false);
+  }
+
+  // ─── TIMELINE FILTER TABS ───
+  const tlFilterTabs = document.querySelectorAll('.tl-filter-tab');
+  const tlItems = document.querySelectorAll('.tl-item');
+
+  tlFilterTabs.forEach(tab => {
+    tab.addEventListener('click', () => {
+      playSound('click');
+      tlFilterTabs.forEach(t => t.classList.remove('active'));
+      tab.classList.add('active');
+      const filter = tab.dataset.tlFilter;
+
+      tlItems.forEach(item => {
+        const cat = item.dataset.tlCategory;
+        if (filter === 'all' || cat === filter) {
+          item.classList.remove('filtered-out');
+        } else {
+          item.classList.add('filtered-out');
+        }
+      });
+    });
+  });
+
+  // ─── TIMELINE DELIVERABLES & IMPACT EXPANDER ───
+  document.querySelectorAll('.tl-expand-btn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      const parent = btn.closest('.tl-item');
+      if (!parent) return;
+      const drawer = parent.querySelector('.tl-impact-drawer');
+      const icon = btn.querySelector('.tl-expand-icon');
+      const text = btn.querySelector('.tl-expand-text');
+      if (!drawer) return;
+
+      const isOpen = drawer.classList.contains('open');
+      if (isOpen) {
+        drawer.classList.remove('open');
+        btn.classList.remove('expanded');
+        if (text) text.textContent = 'Key Deliverables & Impact Metrics';
+        playSound('click');
+      } else {
+        drawer.classList.add('open');
+        btn.classList.add('expanded');
+        if (text) text.textContent = 'Hide Impact Metrics';
+        playSound('open');
+      }
+    });
+  });
+
+  // ─── MODAL SUB-TABS INTERACTION ───
+  const modalTabBtns = document.querySelectorAll('.modal-tab-btn');
+  const modalPanes = {
+    overview: document.getElementById('paneOverview'),
+    architecture: document.getElementById('paneArchitecture'),
+    testing: document.getElementById('paneTesting')
+  };
+
+  modalTabBtns.forEach(btn => {
+    btn.addEventListener('click', () => {
+      playSound('click');
+      modalTabBtns.forEach(b => b.classList.remove('active'));
+      btn.classList.add('active');
+      const target = btn.dataset.modaltab;
+
+      Object.keys(modalPanes).forEach(paneKey => {
+        const pane = modalPanes[paneKey];
+        if (pane) {
+          pane.classList.toggle('active', paneKey === target);
+        }
+      });
+    });
+  });
+
+  // Extended project specs with architecture flow & QA matrices
+  const extendedProjectData = {
+    viana360: {
+      flow: ['SwiftUI Views', 'Combine Event Streams', 'REST API Client', 'iPadOS Split Controllers', 'Swift Charts Rendering'],
+      tests: ['Appium Cross-Device Flow', 'Postman Automated Collections', 'High-Throughput Load Benchmarks', 'Session Persistence Tests']
+    },
+    ulcer: {
+      flow: ['AVFoundation Camera Capture', 'Vision Preprocessing & Crop', 'Core ML Quantized Model', 'Confidence Scorer', 'Prediction UI'],
+      tests: ['Confusion Matrix Validation', 'Apple Neural Engine Latency Profiling', 'Low-Light Exposure Tests', 'Memory Leaks Auditing']
+    },
+    breathtrack: {
+      flow: ['HealthKit SpO2/FVC Stream', 'Local Sync Engine', 'Clinician REST Telehealth Portal', 'Notification Scheduler'],
+      tests: ['Background HealthKit Query Stress', 'Clinician Portal Selenium Regression', 'HIPAA Privacy Encryption Audit']
+    },
+    corecare: {
+      flow: ['User HIG Inputs', 'Combine Reactive State', 'Core Data SQLite Sync', 'Local Notification Queue'],
+      tests: ['Core Data Migration Regression', 'Continuous Loop Memory Profiling', 'Dark Mode Contrast Conformance']
+    },
+    hairjourney: {
+      flow: ['PhotosUI Image Picker', 'Async Compression Pipeline', 'Local Cache Store', 'Milestone Growth Algorithm'],
+      tests: ['Large Asset Memory Spike Testing', 'Local Push Notification Delivery Audit', 'Smooth 60FPS Scroll Benchmarks']
+    },
+    schoolbus: {
+      flow: ['Core Location GPS', 'MapKit Real-time Overlay', 'Firebase Realtime Node', 'Geofence Region Monitor'],
+      tests: ['Simulated Moving Route Resilience', 'Cellular Signal Reconnect Recovery', 'Background Battery Optimization']
+    }
+  };
+
+  // Enhance openProjectModal to populate tabs and flow chips
+  const originalOpenProjectModal = window.openProjectModal || openProjectModal;
+  window.openProjectModal = function(id) {
+    if (typeof originalOpenProjectModal === 'function') {
+      originalOpenProjectModal(id);
+    }
+    // Reset to Overview tab on open
+    modalTabBtns.forEach(b => b.classList.toggle('active', b.dataset.modaltab === 'overview'));
+    Object.keys(modalPanes).forEach(paneKey => {
+      const pane = modalPanes[paneKey];
+      if (pane) pane.classList.toggle('active', paneKey === 'overview');
+    });
+
+    const ext = extendedProjectData[id];
+    const archFlowContainer = document.getElementById('modalArchFlow');
+    const testBadgesContainer = document.getElementById('modalTestBadges');
+
+    if (archFlowContainer && ext) {
+      archFlowContainer.innerHTML = '';
+      ext.flow.forEach((step, idx) => {
+        const chip = document.createElement('div');
+        chip.className = 'flow-step-chip';
+        chip.innerHTML = step + (idx < ext.flow.length - 1 ? ' <span class="arrow">→</span>' : '');
+        archFlowContainer.appendChild(chip);
+      });
+    }
+
+    if (testBadgesContainer && ext) {
+      testBadgesContainer.innerHTML = '';
+      ext.tests.forEach(test => {
+        const chip = document.createElement('div');
+        chip.className = 'flow-step-chip';
+        chip.innerHTML = '🧪 ' + test;
+        testBadgesContainer.appendChild(chip);
+      });
+    }
+  };
+
+  // Re-bind project row clicks to enhanced modal opener
+  projectRows.forEach(row => {
+    row.onclick = (e) => {
+      if (e.target.closest('.proj-live-link')) return;
+      const pid = row.dataset.projectId;
+      if (pid) window.openProjectModal(pid);
+    };
+  });
+
+  // ─── QUICK INQUIRE MESSAGE COMPOSER ───
+  let selectedTopic = 'iOS App Development';
+  const topicChips = document.querySelectorAll('.topic-chip');
+  topicChips.forEach(chip => {
+    chip.addEventListener('click', () => {
+      playSound('click');
+      topicChips.forEach(c => c.classList.remove('active'));
+      chip.classList.add('active');
+      selectedTopic = chip.dataset.topic || 'General Inquiry';
+    });
+  });
+
+  const sendInquireBtn = document.getElementById('sendInquireBtn');
+  const copyDraftBtn = document.getElementById('copyDraftBtn');
+  const inquireName = document.getElementById('inquireName');
+  const inquireNote = document.getElementById('inquireNote');
+
+  function buildMessage() {
+    const sender = (inquireName?.value || '').trim() || 'Prospective Partner';
+    const note = (inquireNote?.value || '').trim() || 'I came across your portfolio and would like to discuss an opportunity regarding ' + selectedTopic + '.';
+    const subject = encodeURIComponent('Inquiry: ' + selectedTopic + ' — ' + sender);
+    const body = encodeURIComponent(
+      'Hi Vishal,\n\n' +
+      note + '\n\n' +
+      'Topic: ' + selectedTopic + '\n' +
+      'From: ' + sender + '\n\n' +
+      'Sent via Vishal Rao M Interactive Portfolio'
+    );
+    const plainText = 'Hi Vishal,\n\n' + note + '\n\nTopic: ' + selectedTopic + '\nFrom: ' + sender;
+    return { subject, body, plainText };
+  }
+
+  if (sendInquireBtn) {
+    sendInquireBtn.addEventListener('click', () => {
+      playSound('open');
+      const { subject, body } = buildMessage();
+      window.location.href = 'mailto:vishalrao5432@gmail.com?subject=' + subject + '&body=' + body;
+      showToast('Launching email client with pre-filled draft...');
+    });
+  }
+
+  if (copyDraftBtn) {
+    copyDraftBtn.addEventListener('click', () => {
+      const { plainText } = buildMessage();
+      if (navigator.clipboard) {
+        navigator.clipboard.writeText(plainText).then(() => {
+          playSound('success');
+          showToast('✓ Message draft copied to clipboard!');
+        });
+      }
+    });
+  }
+
 })();

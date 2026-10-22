@@ -488,6 +488,11 @@
       <li><a href="#contact">Contact</a></li>
     </ul>
     <div class="nav-right" style="display:flex;align-items:center;gap:12px;">
+      <div class="theme-palette-switcher" title="Switch Atmospheric Theme">
+        <button class="palette-chip active" data-theme="cyan" title="Cosmic Cyan" aria-label="Cosmic Cyan Theme"><span class="chip-color cyan"></span></button>
+        <button class="palette-chip" data-theme="violet" title="Cyber Violet" aria-label="Cyber Violet Theme"><span class="chip-color violet"></span></button>
+        <button class="palette-chip" data-theme="emerald" title="Aurora Emerald" aria-label="Aurora Emerald Theme"><span class="chip-color emerald"></span></button>
+      </div>
       <button id="sfx-toggle" class="nav-sfx-btn" title="Toggle Interactive Audio" aria-label="Toggle Sound Effects">
         <span class="sfx-icon">🔈</span>
         <span class="sfx-label">SFX</span>
@@ -860,9 +865,17 @@
     <div class="section-inner">
       <div class="section-label reveal">04 — Journey</div>
       <h2 class="section-heading reveal">EXPERIENCE &amp;<br><em>EDUCATION</em></h2>
+
+      <!-- TIMELINE FILTER TABS -->
+      <div class="timeline-filter-tabs reveal">
+        <button class="tl-filter-tab active" data-tl-filter="all">All Journey <span class="tab-badge">5</span></button>
+        <button class="tl-filter-tab" data-tl-filter="engineering">iOS &amp; QA Engineering <span class="tab-badge">3</span></button>
+        <button class="tl-filter-tab" data-tl-filter="education">Education &amp; Research <span class="tab-badge">2</span></button>
+      </div>
+
       <div class="timeline">
 
-        <div class="tl-item reveal">
+        <div class="tl-item reveal" data-tl-category="engineering">
           <div class="tl-dot"></div>
           <div class="tl-date">2026 – Present</div>
           <div class="tl-role">iOS Developer &amp; Technical Engineer</div>
@@ -879,9 +892,38 @@
             <li>Partner cross-functionally with development and QA teams to isolate defects and drive mission-critical
               projects to deployment.</li>
           </ul>
+          <button class="tl-expand-btn">
+            <span class="tl-expand-icon">+</span>
+            <span class="tl-expand-text">Key Deliverables &amp; Impact Metrics</span>
+          </button>
+          <div class="tl-impact-drawer">
+            <div class="tl-impact-grid">
+              <div class="impact-metric-pill">
+                <span class="imp-icon">🛡️</span>
+                <div>
+                  <div class="imp-num">4 Testing Disciplines</div>
+                  <div class="imp-desc">Selenium, Appium, Load &amp; Security</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">👥</span>
+                <div>
+                  <div class="imp-num">100+ Engineers</div>
+                  <div class="imp-desc">Trained in Swift, SwiftUI &amp; Architecture</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">⚡</span>
+                <div>
+                  <div class="imp-num">Zero-Day Hardening</div>
+                  <div class="imp-desc">Proactive backend vulnerability auditing</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="tl-item reveal">
+        <div class="tl-item reveal" data-tl-category="engineering">
           <div class="tl-dot"></div>
           <div class="tl-date">Oct 2025 – Present</div>
           <div class="tl-role">iOS Developer</div>
@@ -896,9 +938,38 @@
             <li>Led end-to-end testing of the VBuy Food application across iOS devices, confirming functionality, UI
               responsiveness, and defect remediation.</li>
           </ul>
+          <button class="tl-expand-btn">
+            <span class="tl-expand-icon">+</span>
+            <span class="tl-expand-text">Key Deliverables &amp; Impact Metrics</span>
+          </button>
+          <div class="tl-impact-drawer">
+            <div class="tl-impact-grid">
+              <div class="impact-metric-pill">
+                <span class="imp-icon">🚀</span>
+                <div>
+                  <div class="imp-num">2-Month Promotion</div>
+                  <div class="imp-desc">Intern to Full-Time Developer acceleration</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">📱</span>
+                <div>
+                  <div class="imp-num">App Store Production</div>
+                  <div class="imp-desc">Viana 360 shipped for iPhone &amp; iPad</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">🎯</span>
+                <div>
+                  <div class="imp-num">99.9% Reliable</div>
+                  <div class="imp-desc">End-to-end API integration &amp; QA verification</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="tl-item reveal">
+        <div class="tl-item reveal" data-tl-category="engineering">
           <div class="tl-dot"></div>
           <div class="tl-date">Jan 2025 – Jul 2025</div>
           <div class="tl-role">iOS Development Intern</div>
@@ -907,12 +978,33 @@
             <li>Gained hands-on experience in Apple's ecosystem, focusing on native Swift development and iOS
               architecture.</li>
             <li>Contributed to the development of enterprise educational platforms and student evaluation modules.</li>
-            <li>Collaborated with design and engineering teams to ensure pixel-perfect, high-fidelity UI implementation.
-            </li>
+            <li>Collaborated with design and engineering teams to ensure pixel-perfect, high-fidelity UI implementation.</li>
           </ul>
+          <button class="tl-expand-btn">
+            <span class="tl-expand-icon">+</span>
+            <span class="tl-expand-text">Key Deliverables &amp; Impact Metrics</span>
+          </button>
+          <div class="tl-impact-drawer">
+            <div class="tl-impact-grid">
+              <div class="impact-metric-pill">
+                <span class="imp-icon">🎓</span>
+                <div>
+                  <div class="imp-num">Enterprise Scale</div>
+                  <div class="imp-desc">AI-Enhanced ERP &amp; LMS educational portals</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">🎨</span>
+                <div>
+                  <div class="imp-num">High-Fidelity UI</div>
+                  <div class="imp-desc">Pixel-perfect HIG compliant views</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="tl-item reveal">
+        <div class="tl-item reveal" data-tl-category="education">
           <div class="tl-dot"></div>
           <div class="tl-date">2021 – 2025</div>
           <div class="tl-role">B.Tech — Artificial Intelligence &amp; Data Science</div>
@@ -923,9 +1015,38 @@
             <li>Published a research paper on iOS Development in the International Journal of Research Publication and
               Reviews (IJRPR).</li>
           </ul>
+          <button class="tl-expand-btn">
+            <span class="tl-expand-icon">+</span>
+            <span class="tl-expand-text">Key Deliverables &amp; Impact Metrics</span>
+          </button>
+          <div class="tl-impact-drawer">
+            <div class="tl-impact-grid">
+              <div class="impact-metric-pill">
+                <span class="imp-icon">📄</span>
+                <div>
+                  <div class="imp-num">Published Research</div>
+                  <div class="imp-desc">iOS Mobile Architecture Paper in IJRPR</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">🧠</span>
+                <div>
+                  <div class="imp-num">AI &amp; Neural Nets</div>
+                  <div class="imp-desc">Core ML integration &amp; Computer Vision focus</div>
+                </div>
+              </div>
+              <div class="impact-metric-pill">
+                <span class="imp-icon">⭐</span>
+                <div>
+                  <div class="imp-num">CGPA 7.5 / 10</div>
+                  <div class="imp-desc">Distinction in AI &amp; Software Design</div>
+                </div>
+              </div>
+            </div>
+          </div>
         </div>
 
-        <div class="tl-item reveal">
+        <div class="tl-item reveal" data-tl-category="education">
           <div class="tl-dot"></div>
           <div class="tl-date">2020 – 2021</div>
           <div class="tl-role">Higher Secondary Certificate (HSC)</div>
@@ -950,6 +1071,36 @@
         Let's turn your ideas into functional, beautiful mobile apps.
       </p>
       <a href="mailto:vishalrao5432@gmail.com" class="btn-primary reveal"><span>Send Me A Message →</span></a>
+
+      <!-- INTERACTIVE QUICK MESSAGE COMPOSER -->
+      <div class="quick-inquire-card reveal">
+        <div class="qic-header">
+          <span class="qic-tag">Direct Inquire</span>
+          <h3 class="qic-title">Start a Project or Collaboration</h3>
+          <p class="qic-subtitle">Select a topic and generate a pre-drafted message directly to Vishal in one click.</p>
+        </div>
+
+        <div class="qic-topics">
+          <button class="topic-chip active" data-topic="iOS App Development">📱 iOS Native App</button>
+          <button class="topic-chip" data-topic="Automated QA &amp; Testing">🧪 Automated QA / Testing</button>
+          <button class="topic-chip" data-topic="Full-Time Role / Collaboration">🤝 Job / Full-Time Role</button>
+          <button class="topic-chip" data-topic="Technical Consultation">💡 Tech Consulting</button>
+        </div>
+
+        <div class="qic-inputs">
+          <input type="text" id="inquireName" class="qic-input" placeholder="Your Name or Organization" autocomplete="name">
+          <textarea id="inquireNote" class="qic-textarea" placeholder="Brief project scope or message (e.g. 'We need an iOS app with SwiftUI and robust automated testing...')" rows="3"></textarea>
+        </div>
+
+        <div class="qic-actions">
+          <button id="sendInquireBtn" class="btn-primary">
+            <span>Send Pre-Filled Email ↗</span>
+          </button>
+          <button id="copyDraftBtn" class="btn-ghost">
+            <span>Copy Message Draft</span>
+          </button>
+        </div>
+      </div>
 
       <div class="contact-cards">
         <a href="mailto:vishalrao5432@gmail.com" class="contact-card reveal">
@@ -1022,25 +1173,43 @@
         <span class="modal-category" id="modalCategory">iOS · Medical AI</span>
         <button class="modal-close-btn" id="modalCloseBtn" aria-label="Close modal">✕</button>
       </div>
+      <!-- MODAL SUB-TABS -->
+      <div class="modal-subtabs">
+        <button class="modal-tab-btn active" data-modaltab="overview">Overview &amp; App</button>
+        <button class="modal-tab-btn" data-modaltab="architecture">Architecture &amp; Pipeline</button>
+        <button class="modal-tab-btn" data-modaltab="testing">QA &amp; Security Specs</button>
+      </div>
+
       <div class="modal-body">
-        <div class="modal-title-row">
-          <h3 class="modal-title" id="modalTitle">Project Title</h3>
-          <span class="modal-status-badge" id="modalStatusBadge">● Live on App Store</span>
-        </div>
-        <p class="modal-desc" id="modalDesc">Detailed description...</p>
-        <div class="modal-specs-grid">
-          <div class="spec-box">
-            <div class="spec-box-title">System Architecture</div>
-            <div class="spec-box-content" id="modalArch">MVVM + Reactive Data Binding</div>
+        <!-- PANE: OVERVIEW -->
+        <div class="modal-tab-pane active" id="paneOverview">
+          <div class="modal-title-row">
+            <h3 class="modal-title" id="modalTitle">Project Title</h3>
+            <span class="modal-status-badge" id="modalStatusBadge">● Live on App Store</span>
           </div>
-          <div class="spec-box">
-            <div class="spec-box-title">Testing &amp; QA Disciplines</div>
-            <div class="spec-box-content" id="modalQA">Automated UI &amp; Performance Benchmarks</div>
+          <p class="modal-desc" id="modalDesc">Detailed description...</p>
+          <div>
+            <div class="modal-stack-title">Core Technologies &amp; Frameworks</div>
+            <div class="modal-stack-tags" id="modalStackTags"></div>
           </div>
         </div>
-        <div>
-          <div class="modal-stack-title">Core Technologies &amp; Frameworks</div>
-          <div class="modal-stack-tags" id="modalStackTags"></div>
+
+        <!-- PANE: ARCHITECTURE -->
+        <div class="modal-tab-pane" id="paneArchitecture">
+          <div class="modal-pane-header">
+            <h4>System Architecture &amp; Data Flow</h4>
+          </div>
+          <div class="spec-box-content highlighted" id="modalArch">MVVM + Reactive Data Binding</div>
+          <div class="arch-flow-diagram" id="modalArchFlow"></div>
+        </div>
+
+        <!-- PANE: TESTING -->
+        <div class="modal-tab-pane" id="paneTesting">
+          <div class="modal-pane-header">
+            <h4>QA Automation &amp; Security Verification</h4>
+          </div>
+          <div class="spec-box-content highlighted" id="modalQA">Automated UI &amp; Performance Benchmarks</div>
+          <div class="testing-badge-list" id="modalTestBadges"></div>
         </div>
       </div>
       <div class="modal-footer">
