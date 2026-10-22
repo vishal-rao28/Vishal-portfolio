@@ -4,20 +4,31 @@
 
 (function() {
 
-  // ─── CUSTOM CURSOR ───
+  // ─── CUSTOM CURSOR & AMBIENT MOUSE SPOTLIGHT ───
   const cursor = document.getElementById('cursor');
   const trail  = document.getElementById('cursor-trail');
-  let cx = 0, cy = 0, tx = 0, ty = 0;
+  const spotlight = document.getElementById('mouse-glow-spotlight');
+  let cx = 0, cy = 0, tx = 0, ty = 0, sx = 0, sy = 0;
 
-  document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; });
+  document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; }, { passive: true });
 
   function updateCursor() {
-    cursor.style.left = cx + 'px';
-    cursor.style.top  = cy + 'px';
-    tx += (cx - tx) * 0.1;
-    ty += (cy - ty) * 0.1;
-    trail.style.left = tx + 'px';
-    trail.style.top  = ty + 'px';
+    if (cursor) {
+      cursor.style.left = cx + 'px';
+      cursor.style.top  = cy + 'px';
+    }
+    if (trail) {
+      tx += (cx - tx) * 0.12;
+      ty += (cy - ty) * 0.12;
+      trail.style.left = tx + 'px';
+      trail.style.top  = ty + 'px';
+    }
+    if (spotlight) {
+      sx += (cx - sx) * 0.08;
+      sy += (cy - sy) * 0.08;
+      spotlight.style.left = sx + 'px';
+      spotlight.style.top  = sy + 'px';
+    }
     requestAnimationFrame(updateCursor);
   }
   updateCursor();
