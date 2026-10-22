@@ -1,360 +1,254 @@
 /* ═══════════════════════════════════════════════════════
-   THREE.JS SCENE — Apple Cyber-Mesh & Quantum Constellation
-   Engineered for Vishal Rao M · iOS Dev & Technical Engineer
+   THREE.JS SCENE — Premium Neural Network + Geometry
    ═══════════════════════════════════════════════════════ */
 
-(function () {
+(function() {
   const canvas = document.getElementById('bg-canvas');
-  if (!canvas || typeof THREE === 'undefined') return;
-
-  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true, powerPreference: 'high-performance' });
+  const renderer = new THREE.WebGLRenderer({ canvas, alpha: true, antialias: true });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 3000);
-  camera.position.set(0, 0, 520);
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 2000);
+  camera.position.z = 500;
 
-  // ─── 1. CYBER-WAVE TERRAIN (Undulating Digital Horizon) ───
-  const planeWidth = 1800;
-  const planeHeight = 1400;
-  const gridX = 44;
-  const gridY = 34;
-  const terrainGeo = new THREE.PlaneGeometry(planeWidth, planeHeight, gridX, gridY);
-
-  // Store original vertex coordinates
-  const terrainPositions = terrainGeo.attributes.position;
-  const baseTerrainZ = new Float32Array(terrainPositions.count);
-  for (let i = 0; i < terrainPositions.count; i++) {
-    baseTerrainZ[i] = terrainPositions.getZ(i);
-  }
-
-  // Cyan-Blue Wireframe Mesh
-  const terrainMat = new THREE.MeshBasicMaterial({
-    color: 0x007aff,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.13,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-  const terrainMesh = new THREE.Mesh(terrainGeo, terrainMat);
-  terrainMesh.rotation.x = -Math.PI / 2.25;
-  terrainMesh.position.set(0, -260, -80);
-  scene.add(terrainMesh);
-
-  // Glowing Vertex Intersections on the Terrain
-  const vertexPointsMat = new THREE.PointsMaterial({
-    color: 0x00f2fe,
-    size: 2.4,
-    transparent: true,
-    opacity: 0.35,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-  const terrainPoints = new THREE.Points(terrainGeo, vertexPointsMat);
-  terrainPoints.rotation.x = -Math.PI / 2.25;
-  terrainPoints.position.set(0, -260, -80);
-  scene.add(terrainPoints);
-
-  // ─── 2. QUANTUM CONSTELLATION NODES & SYNAPSES ───
-  const N = 320;
-  const particleGeo = new THREE.BufferGeometry();
-  const pCoords = new Float32Array(N * 3);
-  const pColors = new Float32Array(N * 3);
-  const pSizes = new Float32Array(N);
+  // ─── PARTICLE FIELD ───
+  const N = 900;
+  const geo = new THREE.BufferGeometry();
+  const positions = new Float32Array(N * 3);
+  const sizes = new Float32Array(N);
   const velocities = [];
 
-  // Tech palette: iOS Blue (#007aff), Electric Cyan (#00f2fe), Swift Violet (#8b5cf6), Ice White (#ffffff)
-  const palette = [
-    new THREE.Color(0x007aff),
-    new THREE.Color(0x00f2fe),
-    new THREE.Color(0x8b5cf6),
-    new THREE.Color(0x00f5d4),
-    new THREE.Color(0xffffff)
-  ];
-
   for (let i = 0; i < N; i++) {
-    pCoords[i * 3] = (Math.random() - 0.5) * 1500;
-    pCoords[i * 3 + 1] = (Math.random() - 0.5) * 1100;
-    pCoords[i * 3 + 2] = (Math.random() - 0.5) * 750;
+    let x, y, z;
+    
+    // Reserve first 120 particles for the signature "M" pattern
+    if (i < 120) {
+      const t = (i / 120) * 4; // 0 to 4 for 4 segments of M
+      const offsetX = -450; // Move to the left side
+      const offsetY = 50;
+      if (t < 1) { // Up
+        x = -150; y = -150 + t * 300;
+      } else if (t < 2) { // Down to middle
+        x = -150 + (t - 1) * 150; y = 150 - (t - 1) * 150;
+      } else if (t < 3) { // Up to right
+        x = 0 + (t - 2) * 150; y = 0 + (t - 2) * 150;
+      } else { // Down
+        x = 150; y = 150 - (t - 3) * 300;
+      }
+      x += offsetX;
+      y += offsetY;
+      z = -250; // Push further back
+      // Add jitter for "starry" look
+      x += (Math.random() - 0.5) * 60;
+      y += (Math.random() - 0.5) * 60;
+    } else {
+      x = (Math.random() - 0.5) * 1400;
+      y = (Math.random() - 0.5) * 1000;
+      z = (Math.random() - 0.5) * 800;
+    }
 
-    const col = palette[Math.floor(Math.random() * palette.length)];
-    pColors[i * 3] = col.r;
-    pColors[i * 3 + 1] = col.g;
-    pColors[i * 3 + 2] = col.b;
-
-    pSizes[i] = Math.random() * 2.8 + 1.2;
-
+    positions[i*3]   = x;
+    positions[i*3+1] = y;
+    positions[i*3+2] = z;
+    
+    sizes[i] = Math.random() * 2.5 + 0.5;
     velocities.push({
-      x: (Math.random() - 0.5) * 0.22,
-      y: (Math.random() - 0.5) * 0.18,
-      z: (Math.random() - 0.5) * 0.14
+      x: (Math.random() - 0.5) * 0.12,
+      y: (Math.random() - 0.5) * 0.10,
+      z: (Math.random() - 0.5) * 0.08
     });
   }
 
-  particleGeo.setAttribute('position', new THREE.BufferAttribute(pCoords, 3));
-  particleGeo.setAttribute('color', new THREE.BufferAttribute(pColors, 3));
-  particleGeo.setAttribute('size', new THREE.BufferAttribute(pSizes, 1));
+  geo.setAttribute('position', new THREE.BufferAttribute(positions, 3));
+  geo.setAttribute('size', new THREE.BufferAttribute(sizes, 1));
 
-  // Custom Particle Shader with soft glowing core
   const particleMat = new THREE.ShaderMaterial({
     uniforms: { time: { value: 0 } },
     vertexShader: `
       attribute float size;
-      attribute vec3 color;
-      varying vec3 vColor;
       uniform float time;
       void main() {
-        vColor = color;
         vec3 pos = position;
-        pos.y += sin(pos.x * 0.003 + time * 0.5) * 6.0;
-        pos.x += cos(pos.y * 0.003 + time * 0.4) * 5.0;
-        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
-        gl_PointSize = size * (450.0 / -mvPosition.z);
-        gl_Position = projectionMatrix * mvPosition;
+        pos.y += sin(pos.x * 0.005 + time * 0.4) * 8.0;
+        pos.x += cos(pos.y * 0.005 + time * 0.3) * 6.0;
+        gl_Position = projectionMatrix * modelViewMatrix * vec4(pos, 1.0);
+        gl_PointSize = size * (400.0 / -gl_Position.z);
       }
     `,
     fragmentShader: `
-      varying vec3 vColor;
       void main() {
         float d = length(gl_PointCoord - vec2(0.5));
-        if (d > 0.5) discard;
-        float alpha = smoothstep(0.5, 0.05, d) * 0.85;
-        gl_FragColor = vec4(vColor, alpha);
+        if(d > 0.5) discard;
+        float alpha = 1.0 - smoothstep(0.3, 0.5, d);
+        gl_FragColor = vec4(1.0, 1.0, 1.0, alpha * 0.65);
       }
     `,
     transparent: true,
     blending: THREE.AdditiveBlending,
-    depthWrite: false
+    depthWrite: false,
   });
 
-  const particles = new THREE.Points(particleGeo, particleMat);
+  const particles = new THREE.Points(geo, particleMat);
   scene.add(particles);
 
-  // Synaptic Connection Lines (Pre-allocated buffer for optimal 60+ FPS performance)
-  const MAX_CONNECTIONS = 600;
-  const linePositions = new Float32Array(MAX_CONNECTIONS * 2 * 3);
-  const lineColors = new Float32Array(MAX_CONNECTIONS * 2 * 3);
-  const lineGeo = new THREE.BufferGeometry();
-  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3).setUsage(THREE.DynamicDrawUsage));
-  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3).setUsage(THREE.DynamicDrawUsage));
-
+  // ─── CONNECTION LINES ───
   const lineMat = new THREE.LineBasicMaterial({
-    vertexColors: true,
-    transparent: true,
-    opacity: 0.35,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
+    color: 0xffffff, transparent: true, opacity: 0.08,
+    blending: THREE.AdditiveBlending, depthWrite: false,
   });
-  const connectionLines = new THREE.LineSegments(lineGeo, lineMat);
-  scene.add(connectionLines);
 
-  const CONNECT_DIST = 115;
-  const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
+  let linesMesh = null;
+  const CONNECT_DIST = 100;
 
-  function updateConnections() {
-    let lineIdx = 0;
-    const pos = particleGeo.attributes.position.array;
-
-    for (let i = 0; i < N && lineIdx < MAX_CONNECTIONS; i++) {
-      for (let j = i + 1; j < N && lineIdx < MAX_CONNECTIONS; j++) {
-        const dx = pos[i * 3] - pos[j * 3];
-        const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
-        const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
-        const distSq = dx * dx + dy * dy + dz * dz;
-
-        if (distSq < CONNECT_DIST_SQ) {
-          const alpha = 1.0 - Math.sqrt(distSq) / CONNECT_DIST;
-          const idx = lineIdx * 6;
-
-          linePositions[idx] = pos[i * 3];
-          linePositions[idx + 1] = pos[i * 3 + 1];
-          linePositions[idx + 2] = pos[i * 3 + 2];
-
-          linePositions[idx + 3] = pos[j * 3];
-          linePositions[idx + 4] = pos[j * 3 + 1];
-          linePositions[idx + 5] = pos[j * 3 + 2];
-
-          // Blend colors of both nodes
-          const c1r = pColors[i * 3], c1g = pColors[i * 3 + 1], c1b = pColors[i * 3 + 2];
-          const c2r = pColors[j * 3], c2g = pColors[j * 3 + 1], c2b = pColors[j * 3 + 2];
-
-          lineColors[idx] = c1r * alpha;
-          lineColors[idx + 1] = c1g * alpha;
-          lineColors[idx + 2] = c1b * alpha;
-
-          lineColors[idx + 3] = c2r * alpha;
-          lineColors[idx + 4] = c2g * alpha;
-          lineColors[idx + 5] = c2b * alpha;
-
-          lineIdx++;
+  function buildLines() {
+    if (linesMesh) { scene.remove(linesMesh); linesMesh.geometry.dispose(); }
+    const lp = [];
+    const pos = geo.attributes.position.array;
+    for (let i = 0; i < N; i++) {
+      for (let j = i + 1; j < N; j++) {
+        const dx = pos[i*3]   - pos[j*3];
+        const dy = pos[i*3+1] - pos[j*3+1];
+        const dz = pos[i*3+2] - pos[j*3+2];
+        const d  = Math.sqrt(dx*dx + dy*dy + dz*dz);
+        if (d < CONNECT_DIST) {
+          lp.push(pos[i*3], pos[i*3+1], pos[i*3+2]);
+          lp.push(pos[j*3], pos[j*3+1], pos[j*3+2]);
         }
       }
     }
-    lineGeo.setDrawRange(0, lineIdx * 2);
-    lineGeo.attributes.position.needsUpdate = true;
-    lineGeo.attributes.color.needsUpdate = true;
+    const lg = new THREE.BufferGeometry();
+    lg.setAttribute('position', new THREE.BufferAttribute(new Float32Array(lp), 3));
+    linesMesh = new THREE.LineSegments(lg, lineMat);
+    scene.add(linesMesh);
   }
 
-  // ─── 3. FLOATING HOLOGRAPHIC GYROSCOPES & TECH ARTIFACTS ───
-  const floatingGroup = new THREE.Group();
-  scene.add(floatingGroup);
-
-  // Concentric Gyroscope Rings (Symbolizing Apple CoreMotion & System Architecture)
-  function makeGimbalRing(radius, tube, color, opacity = 0.25) {
-    const geo = new THREE.TorusGeometry(radius, tube, 16, 64);
-    const mat = new THREE.MeshBasicMaterial({
-      color,
-      wireframe: true,
-      transparent: true,
-      opacity,
-      blending: THREE.AdditiveBlending
+  // ─── FLOATING WIREFRAME POLYHEDRA ───
+  function makePolyhedron(geo3d, size, x, y, z, color = 0xffffff) {
+    const edges = new THREE.EdgesGeometry(geo3d);
+    const mat = new THREE.LineBasicMaterial({
+      color: color, transparent: true, opacity: 0.25,
+      blending: THREE.AdditiveBlending, depthWrite: false,
     });
-    return new THREE.Mesh(geo, mat);
+    const mesh = new THREE.LineSegments(edges, mat);
+    mesh.scale.setScalar(size);
+    mesh.position.set(x, y, z);
+    mesh.userData = {
+      rotX: (Math.random() - 0.5) * 0.008,
+      rotY: (Math.random() - 0.5) * 0.012,
+      rotZ: (Math.random() - 0.5) * 0.006,
+      floatY: y,
+      floatSpeed: Math.random() * 0.4 + 0.2,
+      floatAmp: Math.random() * 20 + 10,
+    };
+    return mesh;
   }
 
-  const gyroGroup = new THREE.Group();
-  const ring1 = makeGimbalRing(72, 1.2, 0x007aff, 0.28);
-  const ring2 = makeGimbalRing(56, 1.0, 0x00f2fe, 0.22);
-  const ring3 = makeGimbalRing(40, 0.8, 0x8b5cf6, 0.32);
-
-  const coreGeo = new THREE.OctahedronGeometry(22, 1);
-  const coreMat = new THREE.MeshBasicMaterial({
-    color: 0x00f5d4,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.45,
-    blending: THREE.AdditiveBlending
+  const polyhedra = [];
+  const shapes = [
+    new THREE.TorusGeometry(1, 0.3, 16, 32), // Wellness / ZenLife
+    new THREE.DodecahedronGeometry(1),      // Tech / AI
+    new THREE.OctahedronGeometry(1),        // Law / Structure
+    new THREE.IcosahedronGeometry(1),       // Connectivity / Mobile
+    new THREE.TorusKnotGeometry(1, 0.3, 64, 8), // Complexity / Data
+  ];
+  const configs = [
+    { size: 50, x: -400, y: 150,  z: -100, color: 0x4ade80 }, // ZenLife Green
+    { size: 45, x:  380, y: -100, z: -80,  color: 0x60a5fa }, // Tech Blue
+    { size: 70, x:  450, y: 220,  z: -180, color: 0xd4af6a }, // Law Gold
+    { size: 35, x: -320, y: -180, z: -50,  color: 0xf87171 }, // Mobile Red
+    { size: 60, x:  150, y: 280,  z: -250, color: 0xffffff }, // General White
+  ];
+  configs.forEach((cfg, i) => {
+    const poly = makePolyhedron(shapes[i % shapes.length], cfg.size, cfg.x, cfg.y, cfg.z, cfg.color);
+    scene.add(poly);
+    polyhedra.push(poly);
   });
-  const coreMesh = new THREE.Mesh(coreGeo, coreMat);
 
-  gyroGroup.add(ring1);
-  gyroGroup.add(ring2);
-  gyroGroup.add(ring3);
-  gyroGroup.add(coreMesh);
-  gyroGroup.position.set(-420, 140, -120);
-  floatingGroup.add(gyroGroup);
+  // ─── GRID PLANE ───
+  const gridHelper = new THREE.GridHelper(1200, 30, 0x111111, 0x111111);
+  gridHelper.position.y = -280;
+  gridHelper.material.transparent = true;
+  gridHelper.material.opacity = 0.05;
+  scene.add(gridHelper);
 
-  // Floating Icosahedron (Neural AI / Machine Learning Lattice)
-  const icoGeo = new THREE.IcosahedronGeometry(50, 1);
-  const icoEdges = new THREE.EdgesGeometry(icoGeo);
-  const icoMat = new THREE.LineBasicMaterial({
-    color: 0x00f2fe,
-    transparent: true,
-    opacity: 0.28,
-    blending: THREE.AdditiveBlending
+  // ─── LARGE WIREFRAME SPHERE ───
+  const sphereGeo = new THREE.SphereGeometry(280, 24, 16);
+  const sphereEdges = new THREE.EdgesGeometry(sphereGeo);
+  const sphereMat = new THREE.LineBasicMaterial({
+    color: 0xffffff, transparent: true, opacity: 0.12,
+    blending: THREE.AdditiveBlending, depthWrite: false,
   });
-  const icoMesh = new THREE.LineSegments(icoEdges, icoMat);
-  icoMesh.position.set(430, -90, -90);
-  floatingGroup.add(icoMesh);
+  const sphere = new THREE.LineSegments(sphereEdges, sphereMat);
+  scene.add(sphere);
 
-  // Floating Torus Knot (Data Complexity & Cryptography)
-  const knotGeo = new THREE.TorusKnotGeometry(36, 9, 80, 12);
-  const knotMat = new THREE.MeshBasicMaterial({
-    color: 0x8b5cf6,
-    wireframe: true,
-    transparent: true,
-    opacity: 0.18,
-    blending: THREE.AdditiveBlending
-  });
-  const knotMesh = new THREE.Mesh(knotGeo, knotMat);
-  knotMesh.position.set(460, 200, -180);
-  floatingGroup.add(knotMesh);
-
-  // ─── 4. MOUSE & SCROLL INTERACTION ───
+  // ─── MOUSE TRACKING ───
   let mouseX = 0, mouseY = 0;
   let targetMouseX = 0, targetMouseY = 0;
-  let scrollY = 0;
-  let targetScrollY = 0;
+  document.addEventListener('mousemove', e => {
+    targetMouseX = (e.clientX / window.innerWidth  - 0.5) * 60;
+    targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 40;
+  });
 
-  window.addEventListener('mousemove', e => {
-    targetMouseX = (e.clientX / window.innerWidth - 0.5) * 80;
-    targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 60;
-  }, { passive: true });
-
-  window.addEventListener('scroll', () => {
-    targetScrollY = window.scrollY;
-  }, { passive: true });
-
-  // ─── 5. ANIMATION LOOP ───
+  // ─── ANIMATE ───
+  let frameCount = 0;
   const clock = new THREE.Clock();
-  let frame = 0;
 
   function animate() {
     requestAnimationFrame(animate);
     const elapsed = clock.getElapsedTime();
-    frame++;
+    frameCount++;
 
     particleMat.uniforms.time.value = elapsed;
 
-    // Smooth lerp mouse & scroll parallax
-    mouseX += (targetMouseX - mouseX) * 0.05;
-    mouseY += (targetMouseY - mouseY) * 0.05;
-    scrollY += (targetScrollY - scrollY) * 0.06;
-
-    camera.position.x = mouseX * 0.6;
-    camera.position.y = mouseY * 0.5 - (scrollY * 0.15);
-    camera.position.z = 520 + Math.sin(elapsed * 0.2) * 15;
-    camera.lookAt(0, -scrollY * 0.15, 0);
-
-    // Dynamic wave deformation of cyber terrain
-    const pArray = terrainGeo.attributes.position.array;
-    for (let i = 0; i < terrainPositions.count; i++) {
-      const vx = pArray[i * 3];
-      const vy = pArray[i * 3 + 1];
-      const wave = Math.sin(vx * 0.005 + elapsed * 1.1) * Math.cos(vy * 0.004 + elapsed * 0.9) * 32.0;
-      const ripple = Math.sin(Math.sqrt(vx * vx + vy * vy) * 0.008 - elapsed * 2.0) * 10.0;
-      pArray[i * 3 + 2] = baseTerrainZ[i] + wave + ripple;
-    }
-    terrainGeo.attributes.position.needsUpdate = true;
-
-    // Update particle positions and wrap around
-    const coords = particleGeo.attributes.position.array;
+    // Update particle positions
+    const pos = geo.attributes.position.array;
     for (let i = 0; i < N; i++) {
-      coords[i * 3] += velocities[i].x;
-      coords[i * 3 + 1] += velocities[i].y;
-      coords[i * 3 + 2] += velocities[i].z;
-
-      // Gentle bounds wrap
-      if (coords[i * 3] > 750) coords[i * 3] = -750;
-      if (coords[i * 3] < -750) coords[i * 3] = 750;
-      if (coords[i * 3 + 1] > 550) coords[i * 3 + 1] = -550;
-      if (coords[i * 3 + 1] < -550) coords[i * 3 + 1] = 550;
-      if (coords[i * 3 + 2] > 380) coords[i * 3 + 2] = -380;
-      if (coords[i * 3 + 2] < -380) coords[i * 3 + 2] = 380;
+      if (i < 120) {
+        // Signature particles: Very subtle oscillation
+        pos[i*3]   += Math.sin(elapsed * 0.3 + i) * 0.05;
+        pos[i*3+1] += Math.cos(elapsed * 0.3 + i) * 0.05;
+      } else {
+        // Background particles: Linear drift
+        pos[i*3]   += velocities[i].x;
+        pos[i*3+1] += velocities[i].y;
+        pos[i*3+2] += velocities[i].z;
+        if (pos[i*3]   >  700) pos[i*3]   = -700;
+        if (pos[i*3]   < -700) pos[i*3]   =  700;
+        if (pos[i*3+1] >  500) pos[i*3+1] = -500;
+        if (pos[i*3+1] < -500) pos[i*3+1] =  500;
+        if (pos[i*3+2] >  400) pos[i*3+2] = -400;
+        if (pos[i*3+2] < -400) pos[i*3+2] =  400;
+      }
     }
-    particleGeo.attributes.position.needsUpdate = true;
+    geo.attributes.position.needsUpdate = true;
 
-    // Update synaptic line connections every 3 frames for silky smooth performance
-    if (frame % 3 === 0) {
-      updateConnections();
-    }
+    if (frameCount % 6 === 0) buildLines();
 
-    // Animate Gyroscope & Floating Wireframes
-    ring1.rotation.x += 0.006;
-    ring1.rotation.y += 0.009;
-    ring2.rotation.y += 0.012;
-    ring2.rotation.z += 0.007;
-    ring3.rotation.x -= 0.008;
-    ring3.rotation.z += 0.010;
-    coreMesh.rotation.x += 0.015;
-    coreMesh.rotation.y += 0.015;
+    // Polyhedra animation
+    polyhedra.forEach(p => {
+      p.rotation.x += p.userData.rotX;
+      p.rotation.y += p.userData.rotY;
+      p.rotation.z += p.userData.rotZ;
+      p.position.y = p.userData.floatY + Math.sin(elapsed * p.userData.floatSpeed) * p.userData.floatAmp;
+    });
 
-    gyroGroup.position.y = 140 + Math.sin(elapsed * 0.7) * 18;
-    gyroGroup.rotation.y = elapsed * 0.15;
+    // Large sphere rotation
+    sphere.rotation.y += 0.0008;
+    sphere.rotation.x += 0.0003;
 
-    icoMesh.rotation.x += 0.005;
-    icoMesh.rotation.y += 0.008;
-    icoMesh.position.y = -90 + Math.cos(elapsed * 0.6) * 15;
+    // Grid subtle wave
+    gridHelper.position.y = -280 + Math.sin(elapsed * 0.3) * 5;
 
-    knotMesh.rotation.x += 0.004;
-    knotMesh.rotation.y += 0.006;
-    knotMesh.position.y = 200 + Math.sin(elapsed * 0.5 + 1.0) * 20;
+    // Particles group rotation
+    particles.rotation.y = elapsed * 0.0006;
 
-    // Subtle drift of whole particle field
-    particles.rotation.y = elapsed * 0.015;
-    connectionLines.rotation.y = elapsed * 0.015;
+    // Camera follow mouse
+    mouseX += (targetMouseX - mouseX) * 0.03;
+    mouseY += (targetMouseY - mouseY) * 0.03;
+    camera.position.x = mouseX;
+    camera.position.y = mouseY;
+    camera.lookAt(scene.position);
 
     renderer.render(scene, camera);
   }
@@ -365,35 +259,6 @@
     camera.aspect = window.innerWidth / window.innerHeight;
     camera.updateProjectionMatrix();
     renderer.setSize(window.innerWidth, window.innerHeight);
-  }, { passive: true });
+  });
 
 })();
-new THREE.Color(0xffffff)
-    ];
-
-const colors = pGeo.attributes.color.array;
-for (let i = 0; i < PARTICLE_COUNT; i++) {
-  const c = pColorObjs[Math.floor(Math.random() * pColorObjs.length)];
-  colors[i * 3] = c.r;
-  colors[i * 3 + 1] = c.g;
-  colors[i * 3 + 2] = c.b;
-  pColors[i * 3] = c.r;
-  pColors[i * 3 + 1] = c.g;
-  pColors[i * 3 + 2] = c.b;
-}
-pGeo.attributes.color.needsUpdate = true;
-  };
-
-const savedTheme = localStorage.getItem('portfolio_theme');
-if (savedTheme) {
-  window.setThreeTheme(savedTheme);
-}
-
-window.addEventListener('resize', () => {
-  camera.aspect = window.innerWidth / window.innerHeight;
-  camera.updateProjectionMatrix();
-  renderer.setSize(window.innerWidth, window.innerHeight);
-  particleMat.uniforms.uPixelRatio.value = Math.min(window.devicePixelRatio, 2);
-}, { passive: true });
-
-}) ();
