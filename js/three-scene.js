@@ -1,7 +1,6 @@
 /* ═══════════════════════════════════════════════════════
-   THREE.JS SCENE — Real Deep Space & Antigravity Cosmos
-   Authentic Astronomical Universe · Volumetric Nebulae · 
-   Twinkling Starfield · Meteors · Orbital Zero-G Physics
+   THREE.JS SCENE — Holographic Multi-Ring Rig & Constellation Network
+   Engineered for Vishal Rao M · iOS Dev & Technical Engineer
    ═══════════════════════════════════════════════════════ */
 
 (function () {
@@ -18,443 +17,402 @@
   renderer.setSize(window.innerWidth, window.innerHeight);
 
   const scene = new THREE.Scene();
-  scene.fog = new THREE.FogExp2(0x020308, 0.00035);
+  const camera = new THREE.PerspectiveCamera(55, window.innerWidth / window.innerHeight, 0.1, 3000);
+  camera.position.set(0, 0, 580);
 
-  const camera = new THREE.PerspectiveCamera(60, window.innerWidth / window.innerHeight, 0.1, 4000);
-  camera.position.set(0, 0, 600);
+  // ─── 1. HOLOGRAPHIC MULTI-RING RIG (Central Gyroscope & Celestial Sphere) ───
+  const rigGroup = new THREE.Group();
+  scene.add(rigGroup);
+  rigGroup.position.set(0, 0, -100);
 
-  // ─── 1. PROCEDURAL NEBULA GAS CLOUD TEXTURE ───
-  function createNebulaTexture(colorHex = '#38bdf8') {
-    const size = 256;
-    const c = document.createElement('canvas');
-    c.width = size;
-    c.height = size;
-    const ctx = c.getContext('2d');
-
-    const gradient = ctx.createRadialGradient(size / 2, size / 2, 0, size / 2, size / 2, size / 2);
-    gradient.addColorStop(0, colorHex);
-    gradient.addColorStop(0.35, colorHex);
-    gradient.addColorStop(0.7, 'rgba(10, 15, 35, 0.2)');
-    gradient.addColorStop(1, 'rgba(0, 0, 0, 0)');
-
-    ctx.fillStyle = gradient;
-    ctx.fillRect(0, 0, size, size);
-
-    return new THREE.CanvasTexture(c);
-  }
-
-  // Volumetric Nebulae Collection
-  const nebulaeGroup = new THREE.Group();
-  scene.add(nebulaeGroup);
-
-  const nebulaColors = [
-    'rgba(0, 122, 255, 0.35)',   // Deep iOS Deep Space Blue
-    'rgba(0, 242, 254, 0.25)',   // Cyan Stellar Dust
-    'rgba(139, 92, 246, 0.30)',  // Interstellar Violet
-    'rgba(247, 37, 133, 0.20)',  // Cosmic Magenta
-    'rgba(16, 185, 129, 0.18)'   // Auroral Green
-  ];
-
-  const nebulaSprites = [];
-  const nebulaConfigs = [
-    { x: -500, y: 250,  z: -600, scale: 950, colorIdx: 0 },
-    { x: 550,  y: -200, z: -700, scale: 1100, colorIdx: 1 },
-    { x: 300,  y: 350,  z: -900, scale: 1250, colorIdx: 2 },
-    { x: -400, y: -300, z: -800, scale: 900,  colorIdx: 3 },
-    { x: 50,   y: 50,   z: -1100, scale: 1400, colorIdx: 0 },
-    { x: -650, y: -100, z: -1000, scale: 1050, colorIdx: 2 }
-  ];
-
-  nebulaConfigs.forEach(cfg => {
-    const tex = createNebulaTexture(nebulaColors[cfg.colorIdx]);
-    const mat = new THREE.SpriteMaterial({
-      map: tex,
-      transparent: true,
-      opacity: 0.7,
-      blending: THREE.AdditiveBlending,
-      depthWrite: false
-    });
-    const sprite = new THREE.Sprite(mat);
-    sprite.position.set(cfg.x, cfg.y, cfg.z);
-    sprite.scale.set(cfg.scale, cfg.scale, 1);
-    sprite.userData = {
-      baseScale: cfg.scale,
-      rotSpeed: (Math.random() - 0.5) * 0.0004,
-      pulseSpeed: Math.random() * 0.4 + 0.2
-    };
-    nebulaeGroup.add(sprite);
-    nebulaSprites.push(sprite);
-  });
-
-  // ─── 2. REALISTIC TWINKLING DEEP STARFIELD (2,400 Stars) ───
-  const STAR_COUNT = 2400;
-  const starGeo = new THREE.BufferGeometry();
-  const starPositions = new Float32Array(STAR_COUNT * 3);
-  const starColors = new Float32Array(STAR_COUNT * 3);
-  const starSizes = new Float32Array(STAR_COUNT);
-  const starPhases = new Float32Array(STAR_COUNT);
-  const starTwinkleSpeeds = new Float32Array(STAR_COUNT);
-
-  // Real astronomical stellar spectral types (O, B, A, F, G, K, M)
-  const starPalettes = [
-    new THREE.Color(0xb5d4ff), // O/B: Blue-white giant
-    new THREE.Color(0xdce7ff), // A: Bright white-blue
-    new THREE.Color(0xffffff), // Pure white
-    new THREE.Color(0xfff1dc), // F/G: Soft sun-like warm yellow
-    new THREE.Color(0xffddb4), // K: Golden amber
-    new THREE.Color(0xffb89b), // M: Soft cosmic orange-red
-    new THREE.Color(0x99f6e4)  // Cyan-tinted distant star
-  ];
-
-  for (let i = 0; i < STAR_COUNT; i++) {
-    // Spherical distribution with depth from z: -2500 to +400
-    const r = 2400 * Math.cbrt(Math.random());
-    const theta = Math.random() * Math.PI * 2;
-    const phi = Math.acos(2 * Math.random() - 1);
-
-    starPositions[i * 3]     = r * Math.sin(phi) * Math.cos(theta);
-    starPositions[i * 3 + 1] = r * Math.sin(phi) * Math.sin(theta);
-    starPositions[i * 3 + 2] = r * Math.cos(phi) - 400;
-
-    const col = starPalettes[Math.floor(Math.random() * starPalettes.length)];
-    starColors[i * 3]     = col.r;
-    starColors[i * 3 + 1] = col.g;
-    starColors[i * 3 + 2] = col.b;
-
-    // Varied stellar magnitudes (most are tiny pinpoints, few are bright beacons)
-    const rand = Math.random();
-    if (rand > 0.96) {
-      starSizes[i] = Math.random() * 3.5 + 2.5; // Major beacon stars
-    } else if (rand > 0.85) {
-      starSizes[i] = Math.random() * 2.0 + 1.6; // Medium bright stars
-    } else {
-      starSizes[i] = Math.random() * 1.2 + 0.6; // Deep background field
-    }
-
-    starPhases[i] = Math.random() * Math.PI * 2;
-    starTwinkleSpeeds[i] = Math.random() * 2.5 + 0.8;
-  }
-
-  starGeo.setAttribute('position', new THREE.BufferAttribute(starPositions, 3));
-  starGeo.setAttribute('aColor', new THREE.BufferAttribute(starColors, 3));
-  starGeo.setAttribute('aSize', new THREE.BufferAttribute(starSizes, 1));
-  starGeo.setAttribute('aPhase', new THREE.BufferAttribute(starPhases, 1));
-  starGeo.setAttribute('aTwinkleSpeed', new THREE.BufferAttribute(starTwinkleSpeeds, 1));
-
-  // Custom Twinkling Star Shader
-  const starShaderMat = new THREE.ShaderMaterial({
-    uniforms: {
-      uTime: { value: 0 }
-    },
-    vertexShader: `
-      attribute vec3 aColor;
-      attribute float aSize;
-      attribute float aPhase;
-      attribute float aTwinkleSpeed;
-      varying vec3 vColor;
-      varying float vAlpha;
-      uniform float uTime;
-
-      void main() {
-        vColor = aColor;
-        // Natural non-linear twinkle
-        float t = sin(uTime * aTwinkleSpeed + aPhase);
-        float twinkle = 0.45 + 0.55 * (t * t);
-        vAlpha = twinkle;
-
-        vec4 mvPosition = modelViewMatrix * vec4(position, 1.0);
-        gl_PointSize = aSize * (0.8 + 0.4 * t) * (420.0 / -mvPosition.z);
-        gl_Position = projectionMatrix * mvPosition;
-      }
-    `,
-    fragmentShader: `
-      varying vec3 vColor;
-      varying float vAlpha;
-
-      void main() {
-        float d = length(gl_PointCoord - vec2(0.5));
-        if (d > 0.5) discard;
-        // Soft astronomical optical diffraction glow
-        float core = exp(-d * d * 22.0);
-        float halo = smoothstep(0.5, 0.0, d) * 0.4;
-        float intensity = core + halo;
-        gl_FragColor = vec4(vColor, vAlpha * intensity);
-      }
-    `,
-    transparent: true,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-
-  const starfield = new THREE.Points(starGeo, starShaderMat);
-  scene.add(starfield);
-
-  // ─── 3. WEIGHTLESS FLOATING ANTIGRAVITY STARDUST (Zero-G Drift) ───
-  const DUST_COUNT = 380;
-  const dustGeo = new THREE.BufferGeometry();
-  const dustPositions = new Float32Array(DUST_COUNT * 3);
-  const dustVelocities = [];
-
-  for (let i = 0; i < DUST_COUNT; i++) {
-    dustPositions[i * 3]     = (Math.random() - 0.5) * 1400;
-    dustPositions[i * 3 + 1] = (Math.random() - 0.5) * 1000;
-    dustPositions[i * 3 + 2] = (Math.random() - 0.5) * 600;
-
-    dustVelocities.push({
-      x: (Math.random() - 0.5) * 0.25,
-      y: (Math.random() - 0.5) * 0.20,
-      z: (Math.random() - 0.5) * 0.18,
-      origX: dustPositions[i * 3],
-      origY: dustPositions[i * 3 + 1]
-    });
-  }
-
-  dustGeo.setAttribute('position', new THREE.BufferAttribute(dustPositions, 3));
-
-  const dustMat = new THREE.PointsMaterial({
-    color: 0x00f2fe,
-    size: 2.2,
-    transparent: true,
-    opacity: 0.5,
-    blending: THREE.AdditiveBlending,
-    depthWrite: false
-  });
-
-  const stardust = new THREE.Points(dustGeo, dustMat);
-  scene.add(stardust);
-
-  // ─── 4. CELESTIAL ANTIGRAVITY ORBITAL RINGS ───
-  const celestialGroup = new THREE.Group();
-  scene.add(celestialGroup);
-
-  function makeCosmicRing(radius, tube, color, opacity = 0.2) {
-    const geo = new THREE.TorusGeometry(radius, tube, 8, 80);
-    const mat = new THREE.LineBasicMaterial({
+  function createHoloRing(radius, tube, color, opacity = 0.3) {
+    const geo = new THREE.TorusGeometry(radius, tube, 16, 100);
+    const mat = new THREE.MeshBasicMaterial({
       color,
+      wireframe: true,
       transparent: true,
       opacity,
       blending: THREE.AdditiveBlending,
       depthWrite: false
     });
-    return new THREE.LineSegments(new THREE.EdgesGeometry(geo), mat);
+    return new THREE.Mesh(geo, mat);
   }
 
-  const orbitRing1 = makeCosmicRing(220, 0.8, 0x007aff, 0.22);
-  const orbitRing2 = makeCosmicRing(180, 0.6, 0x00f2fe, 0.18);
-  const orbitRing3 = makeCosmicRing(140, 0.5, 0x8b5cf6, 0.25);
+  // Multi-tier Concentric Rings
+  const ring1 = createHoloRing(340, 1.4, 0x00f2fe, 0.32); // Outer Cyan Ring
+  const ring2 = createHoloRing(280, 1.2, 0x007aff, 0.38); // Middle iOS Blue Ring
+  const ring3 = createHoloRing(220, 1.0, 0x8b5cf6, 0.42); // Inner Violet Ring
+  const ring4 = createHoloRing(160, 0.8, 0x00f5d4, 0.35); // Core Teal Ring
 
-  orbitRing1.rotation.x = Math.PI / 3;
-  orbitRing2.rotation.y = Math.PI / 4;
-  orbitRing3.rotation.z = Math.PI / 6;
+  ring1.rotation.x = Math.PI / 3;
+  ring2.rotation.y = Math.PI / 4;
+  ring3.rotation.z = Math.PI / 6;
 
-  celestialGroup.add(orbitRing1);
-  celestialGroup.add(orbitRing2);
-  celestialGroup.add(orbitRing3);
-  celestialGroup.position.set(400, 80, -250);
+  rigGroup.add(ring1);
+  rigGroup.add(ring2);
+  rigGroup.add(ring3);
+  rigGroup.add(ring4);
 
-  // ─── 5. CINEMATIC SHOOTING STARS / METEORS ENGINE ───
-  const meteors = [];
-  const MAX_METEORS = 4;
+  // Large Wireframe Cyber Sphere (Astrolabe / Celestial Globe)
+  const sphereGeo = new THREE.SphereGeometry(250, 24, 16);
+  const sphereEdges = new THREE.EdgesGeometry(sphereGeo);
+  const sphereMat = new THREE.LineBasicMaterial({
+    color: 0x007aff,
+    transparent: true,
+    opacity: 0.14,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const cyberSphere = new THREE.LineSegments(sphereEdges, sphereMat);
+  rigGroup.add(cyberSphere);
 
-  class ShootingStar {
-    constructor() {
-      this.active = false;
-      this.timer = Math.random() * 2.5 + 0.5; // Random initial spawn delay
+  // Glowing Core Geometry (Icosahedron Core)
+  const coreGeo = new THREE.IcosahedronGeometry(75, 1);
+  const coreEdges = new THREE.EdgesGeometry(coreGeo);
+  const coreMat = new THREE.LineBasicMaterial({
+    color: 0x00f2fe,
+    transparent: true,
+    opacity: 0.55,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const coreMesh = new THREE.LineSegments(coreEdges, coreMat);
+  rigGroup.add(coreMesh);
 
-      const points = [new THREE.Vector3(0, 0, 0), new THREE.Vector3(0, 0, 0)];
-      this.geo = new THREE.BufferGeometry().setFromPoints(points);
+  // Satellite Orbiters (Small glowing beads on the rings)
+  const satelliteGeo = new THREE.SphereGeometry(4, 12, 12);
+  const satMat1 = new THREE.MeshBasicMaterial({ color: 0x00f2fe, blending: THREE.AdditiveBlending });
+  const satMat2 = new THREE.MeshBasicMaterial({ color: 0x8b5cf6, blending: THREE.AdditiveBlending });
+  const sat1 = new THREE.Mesh(satelliteGeo, satMat1);
+  const sat2 = new THREE.Mesh(satelliteGeo, satMat2);
+  rigGroup.add(sat1);
+  rigGroup.add(sat2);
 
-      this.mat = new THREE.LineBasicMaterial({
-        color: 0xffffff,
-        transparent: true,
-        opacity: 0,
-        blending: THREE.AdditiveBlending,
-        depthWrite: false
-      });
+  // ─── 2. FLOATING WIREFRAME POLYHEDRA RIGS ───
+  function makePolyhedron(geo3d, size, x, y, z, color = 0x00f2fe) {
+    const edges = new THREE.EdgesGeometry(geo3d);
+    const mat = new THREE.LineBasicMaterial({
+      color,
+      transparent: true,
+      opacity: 0.35,
+      blending: THREE.AdditiveBlending,
+      depthWrite: false
+    });
+    const mesh = new THREE.LineSegments(edges, mat);
+    mesh.scale.setScalar(size);
+    mesh.position.set(x, y, z);
+    mesh.userData = {
+      rotX: (Math.random() - 0.5) * 0.012,
+      rotY: (Math.random() - 0.5) * 0.016,
+      rotZ: (Math.random() - 0.5) * 0.010,
+      floatY: y,
+      floatSpeed: Math.random() * 0.6 + 0.3,
+      floatAmp: Math.random() * 24 + 12
+    };
+    return mesh;
+  }
 
-      this.line = new THREE.Line(this.geo, this.mat);
-      scene.add(this.line);
+  const polyhedra = [];
+  const polyConfigs = [
+    { geo: new THREE.TorusGeometry(1, 0.3, 16, 32), size: 48, x: -440, y: 160,  z: -120, color: 0x00f2fe },
+    { geo: new THREE.TorusKnotGeometry(1, 0.3, 64, 8), size: 42, x: 420,  y: -140, z: -100, color: 0x8b5cf6 },
+    { geo: new THREE.OctahedronGeometry(1), size: 65, x: 460,  y: 220,  z: -160, color: 0x007aff },
+    { geo: new THREE.DodecahedronGeometry(1), size: 40, x: -380, y: -200, z: -80,  color: 0x00f5d4 },
+    { geo: new THREE.IcosahedronGeometry(1), size: 55, x: 180,  y: 300,  z: -200, color: 0xffffff }
+  ];
 
-      this.pos = new THREE.Vector3();
-      this.vel = new THREE.Vector3();
-      this.tailLength = 120;
-      this.life = 0;
-      this.maxLife = 0;
-    }
+  polyConfigs.forEach(cfg => {
+    const p = makePolyhedron(cfg.geo, cfg.size, cfg.x, cfg.y, cfg.z, cfg.color);
+    scene.add(p);
+    polyhedra.push(p);
+  });
 
-    spawn() {
-      this.active = true;
-      this.life = 0;
-      this.maxLife = Math.random() * 0.7 + 0.6; // 0.6s to 1.3s streak
+  // ─── 3. QUANTUM CONSTELLATION NETWORK PATTERN ───
+  const N = 420;
+  const pGeo = new THREE.BufferGeometry();
+  const pPositions = new Float32Array(N * 3);
+  const pColors = new Float32Array(N * 3);
+  const pSizes = new Float32Array(N);
+  const velocities = [];
 
-      // Spawn high up and slightly angled
-      const side = Math.random() > 0.5 ? 1 : -1;
-      this.pos.set(
-        (Math.random() - 0.5) * 1200 + (side * 200),
-        Math.random() * 400 + 200,
-        (Math.random() - 0.5) * 600 - 100
-      );
+  const defaultPalette = [
+    new THREE.Color(0x00f2fe), // Electric Cyan
+    new THREE.Color(0x007aff), // iOS Blue
+    new THREE.Color(0x8b5cf6), // Violet
+    new THREE.Color(0x00f5d4), // Teal
+    new THREE.Color(0xffffff)  // Pure White
+  ];
 
-      // Trajectory angle (streaking diagonally down)
-      const angle = Math.PI / 4 + (Math.random() - 0.5) * 0.4;
-      const speed = Math.random() * 1200 + 1600;
-      this.vel.set(-Math.cos(angle) * speed, -Math.sin(angle) * speed, (Math.random() - 0.5) * 100);
+  for (let i = 0; i < N; i++) {
+    pPositions[i * 3]     = (Math.random() - 0.5) * 1500;
+    pPositions[i * 3 + 1] = (Math.random() - 0.5) * 1100;
+    pPositions[i * 3 + 2] = (Math.random() - 0.5) * 750;
 
-      // Meteor streak color (white-cyan or white-gold)
-      const isGold = Math.random() > 0.6;
-      this.mat.color.setHex(isGold ? 0xfff0d4 : 0xcceeff);
-    }
+    const col = defaultPalette[Math.floor(Math.random() * defaultPalette.length)];
+    pColors[i * 3]     = col.r;
+    pColors[i * 3 + 1] = col.g;
+    pColors[i * 3 + 2] = col.b;
 
-    update(delta) {
-      if (!this.active) {
-        this.timer -= delta;
-        if (this.timer <= 0) {
-          this.spawn();
+    pSizes[i] = Math.random() * 2.8 + 1.2;
+
+    velocities.push({
+      x: (Math.random() - 0.5) * 0.18,
+      y: (Math.random() - 0.5) * 0.14,
+      z: (Math.random() - 0.5) * 0.10
+    });
+  }
+
+  pGeo.setAttribute('position', new THREE.BufferAttribute(pPositions, 3));
+  pGeo.setAttribute('aColor', new THREE.BufferAttribute(pColors, 3));
+  pGeo.setAttribute('aSize', new THREE.BufferAttribute(pSizes, 1));
+
+  // Node Shader Material with soft glow core
+  const particleMat = new THREE.ShaderMaterial({
+    uniforms: { uTime: { value: 0 } },
+    vertexShader: `
+      attribute float aSize;
+      attribute vec3 aColor;
+      varying vec3 vColor;
+      uniform float uTime;
+      void main() {
+        vColor = aColor;
+        vec3 pos = position;
+        pos.y += sin(pos.x * 0.003 + uTime * 0.4) * 6.0;
+        pos.x += cos(pos.y * 0.003 + uTime * 0.3) * 5.0;
+        vec4 mvPosition = modelViewMatrix * vec4(pos, 1.0);
+        gl_PointSize = aSize * (440.0 / -mvPosition.z);
+        gl_Position = projectionMatrix * mvPosition;
+      }
+    `,
+    fragmentShader: `
+      varying vec3 vColor;
+      void main() {
+        float d = length(gl_PointCoord - vec2(0.5));
+        if (d > 0.5) discard;
+        float alpha = smoothstep(0.5, 0.02, d) * 0.9;
+        gl_FragColor = vec4(vColor, alpha);
+      }
+    `,
+    transparent: true,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+
+  const particles = new THREE.Points(pGeo, particleMat);
+  scene.add(particles);
+
+  // Constellation Connection Lines Buffer
+  const MAX_LINES = 700;
+  const linePositions = new Float32Array(MAX_LINES * 2 * 3);
+  const lineColors = new Float32Array(MAX_LINES * 2 * 3);
+  const lineGeo = new THREE.BufferGeometry();
+  lineGeo.setAttribute('position', new THREE.BufferAttribute(linePositions, 3).setUsage(THREE.DynamicDrawUsage));
+  lineGeo.setAttribute('color', new THREE.BufferAttribute(lineColors, 3).setUsage(THREE.DynamicDrawUsage));
+
+  const lineMat = new THREE.LineBasicMaterial({
+    vertexColors: true,
+    transparent: true,
+    opacity: 0.38,
+    blending: THREE.AdditiveBlending,
+    depthWrite: false
+  });
+  const connectionLines = new THREE.LineSegments(lineGeo, lineMat);
+  scene.add(connectionLines);
+
+  const CONNECT_DIST = 110;
+  const CONNECT_DIST_SQ = CONNECT_DIST * CONNECT_DIST;
+
+  function updateConstellation() {
+    let lineIdx = 0;
+    const pos = pGeo.attributes.position.array;
+
+    for (let i = 0; i < N && lineIdx < MAX_LINES; i++) {
+      for (let j = i + 1; j < N && lineIdx < MAX_LINES; j++) {
+        const dx = pos[i * 3]     - pos[j * 3];
+        const dy = pos[i * 3 + 1] - pos[j * 3 + 1];
+        const dz = pos[i * 3 + 2] - pos[j * 3 + 2];
+        const distSq = dx * dx + dy * dy + dz * dz;
+
+        if (distSq < CONNECT_DIST_SQ) {
+          const alpha = 1.0 - Math.sqrt(distSq) / CONNECT_DIST;
+          const idx = lineIdx * 6;
+
+          linePositions[idx]     = pos[i * 3];
+          linePositions[idx + 1] = pos[i * 3 + 1];
+          linePositions[idx + 2] = pos[i * 3 + 2];
+
+          linePositions[idx + 3] = pos[j * 3];
+          linePositions[idx + 4] = pos[j * 3 + 1];
+          linePositions[idx + 5] = pos[j * 3 + 2];
+
+          const c1r = pColors[i * 3],     c1g = pColors[i * 3 + 1], c1b = pColors[i * 3 + 2];
+          const c2r = pColors[j * 3],     c2g = pColors[j * 3 + 1], c2b = pColors[j * 3 + 2];
+
+          lineColors[idx]     = c1r * alpha;
+          lineColors[idx + 1] = c1g * alpha;
+          lineColors[idx + 2] = c1b * alpha;
+
+          lineColors[idx + 3] = c2r * alpha;
+          lineColors[idx + 4] = c2g * alpha;
+          lineColors[idx + 5] = c2b * alpha;
+
+          lineIdx++;
         }
-        return;
-      }
-
-      this.life += delta;
-      const progress = this.life / this.maxLife;
-
-      if (progress >= 1.0) {
-        this.active = false;
-        this.mat.opacity = 0;
-        this.timer = Math.random() * 3.5 + 1.8; // Next meteor in 2–5 seconds
-        return;
-      }
-
-      // Step position
-      this.pos.x += this.vel.x * delta;
-      this.pos.y += this.vel.y * delta;
-      this.pos.z += this.vel.z * delta;
-
-      // Calculate tail trailing behind velocity
-      const dir = this.vel.clone().normalize();
-      const tail = this.pos.clone().sub(dir.multiplyScalar(this.tailLength));
-
-      const posAttr = this.geo.attributes.position;
-      posAttr.setXYZ(0, this.pos.x, this.pos.y, this.pos.z);
-      posAttr.setXYZ(1, tail.x, tail.y, tail.z);
-      posAttr.needsUpdate = true;
-
-      // Fade in sharply, then fade out
-      if (progress < 0.2) {
-        this.mat.opacity = progress / 0.2;
-      } else {
-        this.mat.opacity = (1.0 - progress) * 0.9;
       }
     }
+    lineGeo.setDrawRange(0, lineIdx * 2);
+    lineGeo.attributes.position.needsUpdate = true;
+    lineGeo.attributes.color.needsUpdate = true;
   }
 
-  for (let i = 0; i < MAX_METEORS; i++) {
-    meteors.push(new ShootingStar());
-  }
-
-  // ─── 6. INTERACTION & CAMERA PARALLAX ───
+  // ─── 4. MOUSE & SCROLL TRACKING ───
   let mouseX = 0, mouseY = 0;
   let targetMouseX = 0, targetMouseY = 0;
   let scrollY = 0, targetScrollY = 0;
 
   window.addEventListener('mousemove', e => {
-    targetMouseX = (e.clientX / window.innerWidth - 0.5) * 60;
-    targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 45;
+    targetMouseX = (e.clientX / window.innerWidth - 0.5) * 80;
+    targetMouseY = -(e.clientY / window.innerHeight - 0.5) * 60;
   }, { passive: true });
 
   window.addEventListener('scroll', () => {
     targetScrollY = window.scrollY;
   }, { passive: true });
 
-  // ─── 7. ANIMATION LOOP ───
+  // ─── 5. ANIMATION LOOP ───
   const clock = new THREE.Clock();
+  let frame = 0;
 
   function animate() {
     requestAnimationFrame(animate);
-    const delta = clock.getDelta();
     const elapsed = clock.getElapsedTime();
+    frame++;
 
-    // 1. Twinkling Stars Time Uniform
-    starShaderMat.uniforms.uTime.value = elapsed;
+    particleMat.uniforms.uTime.value = elapsed;
 
-    // 2. Camera smooth lerping & cosmic scroll travel
+    // Smooth lerping mouse & scroll parallax
     mouseX += (targetMouseX - mouseX) * 0.04;
     mouseY += (targetMouseY - mouseY) * 0.04;
     scrollY += (targetScrollY - scrollY) * 0.05;
 
     camera.position.x = mouseX * 0.7;
-    camera.position.y = mouseY * 0.6 - (scrollY * 0.22);
-    camera.position.z = 600 + Math.sin(elapsed * 0.15) * 20;
-    camera.lookAt(0, -scrollY * 0.22, 0);
+    camera.position.y = mouseY * 0.6 - (scrollY * 0.18);
+    camera.lookAt(0, -scrollY * 0.18, 0);
 
-    // 3. Volumetric Nebulae gentle drift & breathe
-    nebulaSprites.forEach(sprite => {
-      sprite.material.rotation += sprite.userData.rotSpeed;
-      const pulse = Math.sin(elapsed * sprite.userData.pulseSpeed) * 40;
-      sprite.scale.set(sprite.userData.baseScale + pulse, sprite.userData.baseScale + pulse, 1);
+    // 1. Gyroscope Rings Rotation & Orbit Dynamics
+    ring1.rotation.x += 0.005;
+    ring1.rotation.y += 0.007;
+    ring2.rotation.y += 0.009;
+    ring2.rotation.z += 0.006;
+    ring3.rotation.x -= 0.007;
+    ring3.rotation.z += 0.008;
+    ring4.rotation.y += 0.012;
+
+    // Cyber Sphere & Core Rotation
+    cyberSphere.rotation.y = elapsed * 0.04;
+    cyberSphere.rotation.x = elapsed * 0.02;
+    coreMesh.rotation.x = elapsed * 0.15;
+    coreMesh.rotation.y = elapsed * 0.18;
+
+    // Satellite Beads Orbiting on the rings
+    sat1.position.set(
+      Math.cos(elapsed * 1.2) * 340,
+      Math.sin(elapsed * 1.2) * 340 * Math.sin(Math.PI / 3),
+      Math.sin(elapsed * 1.2) * 340 * Math.cos(Math.PI / 3)
+    );
+    sat2.position.set(
+      Math.cos(elapsed * 1.5 + 2) * 280 * Math.cos(Math.PI / 4),
+      Math.sin(elapsed * 1.5 + 2) * 280,
+      Math.cos(elapsed * 1.5 + 2) * 280 * Math.sin(Math.PI / 4)
+    );
+
+    // Rig Floating Vertical Harmonics
+    rigGroup.position.y = Math.sin(elapsed * 0.4) * 20;
+    rigGroup.rotation.y = elapsed * 0.03;
+
+    // 2. Floating Polyhedra Animation
+    polyhedra.forEach(p => {
+      p.rotation.x += p.userData.rotX;
+      p.rotation.y += p.userData.rotY;
+      p.rotation.z += p.userData.rotZ;
+      p.position.y = p.userData.floatY + Math.sin(elapsed * p.userData.floatSpeed) * p.userData.floatAmp;
     });
-    nebulaeGroup.rotation.y = elapsed * 0.003;
 
-    // 4. Zero-Gravity Stardust drift with subtle cursor gravity
-    const dPos = dustGeo.attributes.position.array;
-    for (let i = 0; i < DUST_COUNT; i++) {
-      dPos[i * 3]     += dustVelocities[i].x;
-      dPos[i * 3 + 1] += dustVelocities[i].y;
-      dPos[i * 3 + 2] += dustVelocities[i].z;
+    // 3. Update Constellation Nodes & Boundaries
+    const pos = pGeo.attributes.position.array;
+    for (let i = 0; i < N; i++) {
+      pos[i * 3]     += velocities[i].x;
+      pos[i * 3 + 1] += velocities[i].y;
+      pos[i * 3 + 2] += velocities[i].z;
 
-      // Wrap around space boundaries
-      if (dPos[i * 3]     >  700) dPos[i * 3]     = -700;
-      if (dPos[i * 3]     < -700) dPos[i * 3]     =  700;
-      if (dPos[i * 3 + 1] >  500) dPos[i * 3 + 1] = -500;
-      if (dPos[i * 3 + 1] < -500) dPos[i * 3 + 1] =  500;
-      if (dPos[i * 3 + 2] >  300) dPos[i * 3 + 2] = -300;
-      if (dPos[i * 3 + 2] < -300) dPos[i * 3 + 2] =  300;
+      if (pos[i * 3]     >  750) pos[i * 3]     = -750;
+      if (pos[i * 3]     < -750) pos[i * 3]     =  750;
+      if (pos[i * 3 + 1] >  550) pos[i * 3 + 1] = -550;
+      if (pos[i * 3 + 1] < -550) pos[i * 3 + 1] =  550;
+      if (pos[i * 3 + 2] >  380) pos[i * 3 + 2] = -380;
+      if (pos[i * 3 + 2] < -380) pos[i * 3 + 2] =  380;
     }
-    dustGeo.attributes.position.needsUpdate = true;
-    stardust.rotation.y = elapsed * 0.008;
+    pGeo.attributes.position.needsUpdate = true;
 
-    // 5. Orbital Antigravity Rings Rotation
-    orbitRing1.rotation.x += 0.003;
-    orbitRing1.rotation.y += 0.005;
-    orbitRing2.rotation.y += 0.006;
-    orbitRing2.rotation.z += 0.004;
-    orbitRing3.rotation.x += 0.004;
-    orbitRing3.rotation.z += 0.005;
-    celestialGroup.position.y = 80 + Math.sin(elapsed * 0.5) * 16;
+    // Update lines every 3 frames for optimal 60+ FPS
+    if (frame % 3 === 0) {
+      updateConstellation();
+    }
 
-    // 6. Shooting Stars / Meteors Update
-    meteors.forEach(m => m.update(delta));
-
-    // 7. Slow whole-cosmos celestial spin
-    starfield.rotation.y = elapsed * 0.0015;
+    particles.rotation.y = elapsed * 0.012;
+    connectionLines.rotation.y = elapsed * 0.012;
 
     renderer.render(scene, camera);
   }
 
   animate();
 
-  // ─── 8. LIVE THEME INTEGRATION ───
+  // ─── 6. THEME SWITCHER INTEGRATION ───
   window.setThreeTheme = function (themeName) {
+    let primaryColor, secondaryColor, tertiaryColor, newPalette;
+
     if (themeName === 'swift') {
-      dustMat.color.setHex(0xff5e3a);
-      orbitRing1.material.color.setHex(0xff5e3a);
-      orbitRing2.material.color.setHex(0xec4899);
-      orbitRing3.material.color.setHex(0xa855f7);
+      primaryColor = 0xff5e3a;
+      secondaryColor = 0xec4899;
+      tertiaryColor = 0xa855f7;
+      newPalette = [new THREE.Color(0xff5e3a), new THREE.Color(0xec4899), new THREE.Color(0xa855f7), new THREE.Color(0xf59e0b), new THREE.Color(0xffffff)];
     } else if (themeName === 'matrix') {
-      dustMat.color.setHex(0x00f5d4);
-      orbitRing1.material.color.setHex(0x00f5d4);
-      orbitRing2.material.color.setHex(0x10b981);
-      orbitRing3.material.color.setHex(0x06b6d4);
+      primaryColor = 0x00f5d4;
+      secondaryColor = 0x10b981;
+      tertiaryColor = 0x06b6d4;
+      newPalette = [new THREE.Color(0x00f5d4), new THREE.Color(0x10b981), new THREE.Color(0x34d399), new THREE.Color(0x06b6d4), new THREE.Color(0xffffff)];
     } else if (themeName === 'titanium') {
-      dustMat.color.setHex(0xffffff);
-      orbitRing1.material.color.setHex(0xffffff);
-      orbitRing2.material.color.setHex(0x94a3b8);
-      orbitRing3.material.color.setHex(0x64748b);
-    } else { // cyber / deep space default
-      dustMat.color.setHex(0x00f2fe);
-      orbitRing1.material.color.setHex(0x007aff);
-      orbitRing2.material.color.setHex(0x00f2fe);
-      orbitRing3.material.color.setHex(0x8b5cf6);
+      primaryColor = 0xffffff;
+      secondaryColor = 0xcbd5e1;
+      tertiaryColor = 0x94a3b8;
+      newPalette = [new THREE.Color(0xffffff), new THREE.Color(0xcbd5e1), new THREE.Color(0x94a3b8), new THREE.Color(0x64748b), new THREE.Color(0x38bdf8)];
+    } else { // cyber default
+      primaryColor = 0x00f2fe;
+      secondaryColor = 0x007aff;
+      tertiaryColor = 0x8b5cf6;
+      newPalette = defaultPalette;
     }
+
+    ring1.material.color.setHex(primaryColor);
+    ring2.material.color.setHex(secondaryColor);
+    ring3.material.color.setHex(tertiaryColor);
+    ring4.material.color.setHex(primaryColor);
+    cyberSphere.material.color.setHex(secondaryColor);
+    coreMesh.material.color.setHex(primaryColor);
+    sat1.material.color.setHex(primaryColor);
+    sat2.material.color.setHex(tertiaryColor);
+
+    const colors = pGeo.attributes.aColor.array;
+    for (let i = 0; i < N; i++) {
+      const col = newPalette[Math.floor(Math.random() * newPalette.length)];
+      pColors[i * 3]     = col.r;
+      pColors[i * 3 + 1] = col.g;
+      pColors[i * 3 + 2] = col.b;
+      colors[i * 3]     = col.r;
+      colors[i * 3 + 1] = col.g;
+      colors[i * 3 + 2] = col.b;
+    }
+    pGeo.attributes.aColor.needsUpdate = true;
   };
 
   const savedTheme = localStorage.getItem('portfolio_theme');

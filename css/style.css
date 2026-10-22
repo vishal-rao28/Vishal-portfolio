@@ -259,32 +259,63 @@ section { position: relative; z-index: 2; }
   position: relative; overflow:hidden; padding: 0 60px;
 }
 
-/* Rotating rings */
+/* Rotating Rings Rig */
 .hero-ring {
   position: absolute; border-radius: 50%;
-  border: 1px solid rgba(255,255,255,0.04);
   pointer-events: none;
   animation: ringRotate 30s linear infinite;
+  box-sizing: border-box;
+}
+.hero-ring-4 {
+  width: 500px; height: 500px;
+  top: 50%; left: 50%;
+  transform: translate(-50%, -50%);
+  border: 1px dotted rgba(0, 245, 212, 0.28);
+  animation-duration: 25s;
+  box-shadow: 0 0 30px rgba(0, 245, 212, 0.08);
 }
 .hero-ring-1 {
-  width: 800px; height: 800px;
+  width: 760px; height: 760px;
   top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
+  transform: translate(-50%, -50%);
+  border: 1.5px solid rgba(0, 242, 254, 0.22);
+  box-shadow: 0 0 40px rgba(0, 122, 255, 0.15), inset 0 0 35px rgba(0, 242, 254, 0.06);
   animation-duration: 40s;
 }
+.hero-ring-1::before {
+  content: '';
+  position: absolute;
+  top: -4px; left: 50%;
+  width: 8px; height: 8px;
+  background: var(--accent-cyan);
+  border-radius: 50%;
+  box-shadow: 0 0 14px var(--accent-cyan);
+}
 .hero-ring-2 {
-  width: 1100px; height: 1100px;
+  width: 1040px; height: 1040px;
   top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  border-style: dashed;
-  animation-duration: 70s; animation-direction: reverse;
+  transform: translate(-50%, -50%);
+  border: 1.5px dashed rgba(139, 92, 246, 0.25);
+  box-shadow: 0 0 50px rgba(139, 92, 246, 0.1);
+  animation-duration: 65s;
+  animation-direction: reverse;
+}
+.hero-ring-2::after {
+  content: '';
+  position: absolute;
+  bottom: -5px; left: 50%;
+  width: 9px; height: 9px;
+  background: var(--accent-violet);
+  border-radius: 50%;
+  box-shadow: 0 0 16px var(--accent-violet);
 }
 .hero-ring-3 {
-  width: 1400px; height: 1400px;
+  width: 1340px; height: 1340px;
   top: 50%; left: 50%;
-  transform: translate(-50%,-50%);
-  animation-duration: 100s;
-  border-color: rgba(212,175,106,0.03);
+  transform: translate(-50%, -50%);
+  border: 1px solid rgba(0, 122, 255, 0.14);
+  animation-duration: 95s;
+  box-shadow: 0 0 60px rgba(0, 122, 255, 0.06);
 }
 @keyframes ringRotate {
   from { transform: translate(-50%,-50%) rotate(0deg); }
