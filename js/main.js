@@ -9,7 +9,12 @@
   const trail  = document.getElementById('cursor-trail');
   let cx = 0, cy = 0, tx = 0, ty = 0;
 
-  document.addEventListener('mousemove', e => { cx = e.clientX; cy = e.clientY; });
+  document.addEventListener('mousemove', e => { 
+    cx = e.clientX; 
+    cy = e.clientY; 
+    document.documentElement.style.setProperty('--mouse-x', cx + 'px');
+    document.documentElement.style.setProperty('--mouse-y', cy + 'px');
+  });
 
   function updateCursor() {
     cursor.style.left = cx + 'px';
@@ -22,9 +27,20 @@
   }
   updateCursor();
 
-  document.querySelectorAll('a, button, .proj-row, .skill-card, .stat-card, .contact-card, .close-btn').forEach(el => {
+  document.querySelectorAll('a, button, .proj-row, .skill-card, .stat-card, .contact-card, .close-btn, .tl-item').forEach(el => {
     el.addEventListener('mouseenter', () => document.body.classList.add('cursor-hover'));
     el.addEventListener('mouseleave', () => document.body.classList.remove('cursor-hover'));
+  });
+
+  // ─── CARD SPOTLIGHT GRADIENT TRACKING ───
+  document.querySelectorAll('.skill-card, .proj-row, .tl-item, .stat-card, .contact-card').forEach(card => {
+    card.addEventListener('mousemove', e => {
+      const rect = card.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      card.style.setProperty('--card-mouse-x', `${x}px`);
+      card.style.setProperty('--card-mouse-y', `${y}px`);
+    });
   });
 
   // ─── SCROLL REVEAL ───
